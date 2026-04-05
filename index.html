@@ -453,13 +453,21 @@ header p{font-size:12px;color:var(--text2);margin-top:2px}
   </div>
   <div style="position:relative;flex:1;overflow:hidden;background:#111">
     <div id="scan-region" style="width:100%;height:100%"></div>
+    <!-- Status indicator -->
+    <div id="scan-status" style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);border-radius:20px;padding:6px 16px;font-size:13px;color:#fff;white-space:nowrap;pointer-events:none;display:none"></div>
     <div class="scan-no-support" id="scan-no-support" style="display:none">
       <div style="font-size:48px">📵</div>
       <div style="font-size:15px;font-weight:600;color:#fff">Kamera nicht verfügbar</div>
       <div style="font-size:12px;color:rgba(255,255,255,0.7);max-width:280px;text-align:center">Bitte manuell suchen.</div>
     </div>
   </div>
-  <div class="scan-hint" id="scan-hint">Barcode im Rahmen positionieren</div>
+  <div style="background:#000;padding:12px 16px;flex-shrink:0">
+    <div class="scan-hint" id="scan-hint" style="padding:0 0 10px">Barcode in die Kamera halten</div>
+    <div style="display:flex;gap:8px">
+      <input id="scan-manual-input" type="text" inputmode="numeric" placeholder="Barcode manuell eingeben…" style="flex:1;background:rgba(255,255,255,0.1);border:0.5px solid rgba(255,255,255,0.2);border-radius:8px;color:#fff;font-family:DM Mono,monospace;font-size:14px;padding:9px 12px;outline:none;-webkit-appearance:none" onkeydown="if(event.key==='Enter')manualScan()"/>
+      <button onclick="manualScan()" style="background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:500;padding:9px 14px;cursor:pointer;white-space:nowrap;font-family:DM Sans,sans-serif">Suchen</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1084,8 +1092,10 @@ function openHelp(){document.getElementById('help-overlay').classList.add('show'
 function closeHelp(){document.getElementById('help-overlay').classList.remove('show');}
 
 // ── Barcode Scan ─────────────────────────────────────────────────────────────
-// ── Barcode Scanner (html5-qrcode – works on iOS Chrome + Safari + Android) ──
+// ── Barcode Scanner ────────────────────────────────────────────────────────────
 let html5Scanner=null;
+let scanLastCode='';
+let scanStatusTimer=null;
 
 async function loadScanLib(){
   if(window.Html5Qrcode) return;
@@ -1097,44 +1107,76 @@ async function loadScanLib(){
   });
 }
 
+function showScanStatus(msg, color){
+  const el=document.getElementById('scan-status');
+  if(!el) return;
+  el.textContent=msg;
+  el.style.background=color||'rgba(0,0,0,0.7)';
+  el.style.display='block';
+  clearTimeout(scanStatusTimer);
+  scanStatusTimer=setTimeout(()=>{el.style.display='none';},2000);
+}
+
 async function openScan(){
   const overlay=document.getElementById('scan-overlay');
   overlay.classList.add('show');
   document.getElementById('scan-no-support').style.display='none';
   document.getElementById('scan-hint').textContent='Kamera wird gestartet…';
+  document.getElementById('scan-manual-input').value='';
+  scanLastCode='';
 
   if(location.protocol!=='https:'&&location.hostname!=='localhost'){
-    showScanError('🔒','HTTPS erforderlich','Öffne die App über GitHub Pages (HTTPS). Lokale Dateien haben keinen Kamera-Zugriff.');
+    showScanError('🔒','HTTPS erforderlich','Öffne die App über GitHub Pages (HTTPS).');
     return;
   }
   try{
     await loadScanLib();
-    // Use html5-qrcode's region div instead of the video element
-    const scanDiv=document.getElementById('scan-region');
     html5Scanner=new Html5Qrcode('scan-region',{verbose:false});
+
+    // All supported formats – QR, EAN, UPC, Code128/39/93, DataMatrix, ITF, Aztec etc.
+    const allFormats=Object.values(Html5QrcodeSupportedFormats).filter(v=>typeof v==='number');
+
     await html5Scanner.start(
       {facingMode:'environment'},
-      {fps:10,qrbox:{width:250,height:150},aspectRatio:1.5,
-       formatsToSupport:[
-        Html5QrcodeSupportedFormats.EAN_13,
-        Html5QrcodeSupportedFormats.EAN_8,
-        Html5QrcodeSupportedFormats.CODE_128,
-        Html5QrcodeSupportedFormats.UPC_A,
-        Html5QrcodeSupportedFormats.UPC_E,
-        Html5QrcodeSupportedFormats.CODE_39,
-      ]},
-      (code)=>{closeScan();fetchBarcode(code);},
-      ()=>{}
+      {
+        fps:15,
+        // Large scan box – easier to aim
+        qrbox:function(w,h){
+          const side=Math.min(w,h)*0.75;
+          return {width:Math.round(side),height:Math.round(side*0.6)};
+        },
+        aspectRatio:1.0,
+        formatsToSupport:allFormats,
+        // Experimental: try harder to decode
+        experimentalFeatures:{useBarCodeDetectorIfSupported:true},
+      },
+      function(code,result){
+        // Prevent duplicate rapid fires
+        if(code===scanLastCode) return;
+        scanLastCode=code;
+        showScanStatus('✓ Erkannt: '+code, 'rgba(74,222,128,0.85)');
+        setTimeout(function(){closeScan();fetchBarcode(code);},400);
+      },
+      function(err){
+        // Scanning continuously – no action on each miss
+      }
     );
-    document.getElementById('scan-hint').textContent='Barcode im Rahmen positionieren';
+    document.getElementById('scan-hint').textContent='Barcode ruhig in die Kamera halten';
   }catch(e){
     let msg='Kamera-Zugriff nicht möglich.';
-    if(e&&e.toString().includes('Permission'))
-      msg='Kamera-Berechtigung verweigert. Einstellungen öffnen → Browser → Kamera erlauben, dann Seite neu laden.';
+    if(e&&(e.toString().includes('Permission')||e.toString().includes('NotAllowed')))
+      msg='Kamera-Berechtigung verweigert. Einstellungen → Browser → Kamera erlauben, dann neu laden.';
     else if(e&&e.toString().includes('NotFound'))
       msg='Keine Kamera gefunden.';
     showScanError('📵','Kamera nicht verfügbar',msg);
   }
+}
+
+function manualScan(){
+  const val=document.getElementById('scan-manual-input').value.trim();
+  if(!val){return;}
+  closeScan();
+  fetchBarcode(val);
 }
 
 function showScanError(emoji,title,msg){
@@ -1147,12 +1189,14 @@ function showScanError(emoji,title,msg){
 }
 
 function closeScan(){
+  clearTimeout(scanStatusTimer);
+  scanLastCode='';
   if(html5Scanner){
-    html5Scanner.stop().then(()=>{html5Scanner.clear();html5Scanner=null;}).catch(()=>{html5Scanner=null;});
+    html5Scanner.stop().then(function(){html5Scanner.clear();html5Scanner=null;}).catch(function(){html5Scanner=null;});
   }
   document.getElementById('scan-overlay').classList.remove('show');
   document.getElementById('scan-no-support').style.display='none';
-  document.getElementById('scan-hint').textContent='Barcode im Rahmen positionieren';
+  document.getElementById('scan-hint').textContent='Barcode in die Kamera halten';
 }
 
 async function fetchBarcode(code){
