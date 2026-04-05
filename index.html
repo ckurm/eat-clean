@@ -1084,58 +1084,66 @@ async function fetchBarcode(code){
 function searchOnline(q){
   closeDetail();
   const res=document.getElementById('search-results');
-  res.innerHTML='<div class="loading"><div class="loading-spinner"></div>Online suchen nach \u201e'+q+'\u201c\u2026</div>';
-  // Use tagtype=brands for brand searches, otherwise general search
-  // sort_by=unique_scans_n = most scanned products first (most popular)
-  const url='https://world.openfoodfacts.org/cgi/search.pl?search_terms='+encodeURIComponent(q)
-    +'&search_simple=1&action=process&json=1&page_size=12&sort_by=unique_scans_n&fields=code,product_name,product_name_de,brands,nutriments';
+  res.innerHTML='<div class="loading"><div class="loading-spinner"></div>Online suchen nach "'+q+'"...</div>';
+
+  // Simple clean API call without unsupported parameters
+  const url='https://world.openfoodfacts.org/cgi/search.pl'
+    +'?search_terms='+encodeURIComponent(q)
+    +'&search_simple=1'
+    +'&action=process'
+    +'&json=1'
+    +'&page_size=12';
+
   fetch(url)
-  .then(function(r){return r.json();})
-  .then(function(data){
-    // Filter: must have a name and at least some nutriment data
-    const items=(data.products||[])
-      .filter(function(p){return (p.product_name_de||p.product_name)&&p.code;})
-      .slice(0,10);
-    if(!items.length){
-      // Try brand-specific search as fallback
-      return fetch('https://world.openfoodfacts.org/cgi/search.pl?tagtype_0=brands&tag_contains_0=contains&tag_0='+encodeURIComponent(q)+'&action=process&json=1&page_size=10&sort_by=unique_scans_n&fields=code,product_name,product_name_de,brands,nutriments')
-        .then(function(r){return r.json();})
-        .then(function(data2){
-          const items2=(data2.products||[])
-            .filter(function(p){return (p.product_name_de||p.product_name)&&p.code;})
-            .slice(0,10);
-          renderOnlineResults(items2, q, res);
-        });
-    }
-    renderOnlineResults(items, q, res);
-  })
-  .catch(function(){
-    res.innerHTML='<div class="empty-state"><div class="empty-state-emoji">\u26a0\ufe0f</div><div class="empty-state-title">Fehler</div><div class="empty-state-sub">Internetverbindung pr\u00fcfen</div></div>';
-  });
+    .then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    })
+    .then(function(data){
+      const products=data.products||[];
+      const items=products.filter(function(p){
+        return (p.product_name_de||p.product_name)&&p.code;
+      }).slice(0,10);
+
+      if(!items.length){
+        res.innerHTML='<div class="empty-state"><div class="empty-state-emoji">&#128269;</div>'
+          +'<div class="empty-state-title">Nichts gefunden</div>'
+          +'<div class="empty-state-sub">Kein Produkt gefunden fuer "'+q+'"</div></div>';
+        return;
+      }
+      renderOnlineResults(items, res);
+    })
+    .catch(function(err){
+      res.innerHTML='<div class="empty-state"><div class="empty-state-emoji">&#9888;</div>'
+        +'<div class="empty-state-title">Verbindungsfehler</div>'
+        +'<div class="empty-state-sub">Open Food Facts nicht erreichbar. Bitte Internetverbindung und HTTPS pruefen.</div></div>';
+    });
 }
 
-function renderOnlineResults(items, q, res){
-  if(!items.length){
-    res.innerHTML='<div class="empty-state"><div class="empty-state-emoji">\ud83d\udd0d</div><div class="empty-state-title">Nichts gefunden</div><div class="empty-state-sub">Kein Produkt f\u00fcr \u201e'+q+'\u201c gefunden</div></div>';
-    return;
-  }
-  let html='<div style="font-size:11px;color:var(--text3);margin-bottom:8px;padding:0 2px">\ud83c\udf10 '+items.length+' Online-Ergebnis'+(items.length!==1?'se':'')+' (Open Food Facts)</div><div class="food-list">';
+function renderOnlineResults(items, res){
+  var html='<div style="font-size:11px;color:var(--text3);margin-bottom:8px;padding:0 2px">'
+    +'&#127760; '+items.length+' Online-Ergebnis'+(items.length!==1?'se':'')+' (Open Food Facts)'
+    +'</div><div class="food-list">';
+
   items.forEach(function(p){
-    const n=p.nutriments||{};
-    const kcal=Math.round(n['energy-kcal_100g']||n['energy-kcal']||0);
-    const name=(p.product_name_de||p.product_name||'Unbekannt').substring(0,55);
-    const brand=p.brands?p.brands.split(',')[0].trim():'';
-    const code=p.code||'';
+    var n=p.nutriments||{};
+    var kcal=Math.round(n['energy-kcal_100g']||n['energy-kcal']||0);
+    var name=(p.product_name_de||p.product_name||'Unbekannt').substring(0,55);
+    var brand=p.brands?p.brands.split(',')[0].trim():'';
+    var code=p.code||'';
+
     html+='<div class="food-item" onclick="fetchBarcode(\''+code+'\')">'
-      +'<div class="food-item-emoji">\ud83d\udce6</div>'
+      +'<div class="food-item-emoji">&#128230;</div>'
       +'<div class="food-item-info">'
         +'<div class="food-item-name">'+name+'</div>'
-        +'<div class="food-item-sub">'+(brand||'')+(brand&&kcal?' &middot; ':''+(kcal?'':' '))+(kcal?kcal+' kcal/100g':'Nährwerte werden geladen')+'</div>'
+        +'<div class="food-item-sub">'+(brand?brand+' &middot; ':'')+(kcal?kcal+' kcal/100g':'')+'</div>'
       +'</div>'
       +(kcal?'<div class="food-item-right"><div class="food-item-kcal">'+kcal+'</div><div class="food-item-per">kcal/100g</div></div>':'')
     +'</div>';
   });
-  res.innerHTML=html+'</div>';
+
+  html+='</div>';
+  res.innerHTML=html;
 }
 function openFavBackup(){document.getElementById('fav-backup-overlay').classList.add('show');}
 function closeFavBackup(){document.getElementById('fav-backup-overlay').classList.remove('show');}
