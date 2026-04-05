@@ -401,7 +401,10 @@ header p{font-size:12px;color:var(--text2);margin-top:2px}
       <div class="help-section">
         <div class="help-section-title">🔍 Suche</div>
         <div class="help-row"><div><b>Lebensmittel suchen</b> – Tippe einen Namen ein. Exakte Treffer erscheinen zuerst.</div></div>
-        <div class="help-row"><div><b>Barcode scannen</b> – Tippe auf das lila Symbol rechts neben der Suche. Die Kamera öffnet sich und scannt automatisch. Das Produkt wird über die Open Food Facts Datenbank geladen.</div></div>
+        <div class="help-row"><div><b>Barcode scannen</b> – Tippe auf das lila Symbol rechts neben der Suche. Es gibt zwei Wege:<br>
+        1. <b>Foto-Button</b> (empfohlen für iPhone): Großer lila Knopf im Scan-Fenster. Kamera öffnet sich, Foto aufnehmen – egal ob quer, schief oder falschrum. Die App wertet das Foto aus.<br>
+        2. <b>Live-Scanner</b>: Kamera läuft durch und erkennt Codes automatisch (funktioniert gut auf Android).<br>
+        3. <b>Manuelle Eingabe</b>: Barcode-Nummer unten eintippen falls alles andere nicht klappt.</div></div>
         <div class="help-row"><div><b>Detailansicht</b> – Tippe auf ein Lebensmittel um Nährwerte, Vitamine und Mineralien zu sehen.</div></div>
         <div class="help-row"><div><b>Portionsrechner</b> – Tippe auf das Gramm-Feld um die Menge anzupassen. Die Nährwerte passen sich automatisch an.</div></div>
       </div>
@@ -453,20 +456,33 @@ header p{font-size:12px;color:var(--text2);margin-top:2px}
   </div>
   <div style="position:relative;flex:1;overflow:hidden;background:#111">
     <div id="scan-region" style="width:100%;height:100%"></div>
-    <!-- Status indicator -->
-    <div id="scan-status" style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);border-radius:20px;padding:6px 16px;font-size:13px;color:#fff;white-space:nowrap;pointer-events:none;display:none"></div>
+    <div id="scan-status" style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);border-radius:20px;padding:7px 18px;font-size:13px;color:#fff;white-space:nowrap;pointer-events:none;display:none;transition:opacity .3s"></div>
     <div class="scan-no-support" id="scan-no-support" style="display:none">
-      <div style="font-size:48px">📵</div>
-      <div style="font-size:15px;font-weight:600;color:#fff">Kamera nicht verfügbar</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.7);max-width:280px;text-align:center">Bitte manuell suchen.</div>
+      <div style="font-size:48px">📷</div>
+      <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:4px">Kein Live-Scanner</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.7);max-width:280px;text-align:center">Nutze das Foto unten – das funktioniert auf allen Geräten.</div>
+    </div>
+    <!-- Photo decode preview -->
+    <div id="scan-photo-preview" style="display:none;position:absolute;inset:0;background:#000;align-items:center;justify-content:center;flex-direction:column;gap:12px">
+      <div id="scan-photo-spinner" style="width:36px;height:36px;border:3px solid rgba(255,255,255,0.2);border-top-color:#7c6ef5;border-radius:50%;animation:spin .8s linear infinite"></div>
+      <div style="color:#fff;font-size:14px">Barcode wird ausgewertet…</div>
     </div>
   </div>
-  <div style="background:#000;padding:12px 16px;flex-shrink:0">
-    <div class="scan-hint" id="scan-hint" style="padding:0 0 10px">Barcode in die Kamera halten</div>
+  <div style="background:#000;padding:12px 16px 20px;flex-shrink:0">
+    <div id="scan-hint" style="color:rgba(255,255,255,0.6);text-align:center;font-size:12px;margin-bottom:12px">Barcode ruhig in die Kamera halten, oder Foto machen</div>
+    <!-- BIG Photo Button -->
+    <button onclick="scanByPhoto()" style="width:100%;background:var(--accent);border:none;border-radius:var(--radius-sm);color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;padding:14px;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      Foto aufnehmen &amp; scannen
+    </button>
+    <!-- Manual fallback -->
     <div style="display:flex;gap:8px">
-      <input id="scan-manual-input" type="text" inputmode="numeric" placeholder="Barcode manuell eingeben…" style="flex:1;background:rgba(255,255,255,0.1);border:0.5px solid rgba(255,255,255,0.2);border-radius:8px;color:#fff;font-family:DM Mono,monospace;font-size:14px;padding:9px 12px;outline:none;-webkit-appearance:none" onkeydown="if(event.key==='Enter')manualScan()"/>
-      <button onclick="manualScan()" style="background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:500;padding:9px 14px;cursor:pointer;white-space:nowrap;font-family:DM Sans,sans-serif">Suchen</button>
+      <input id="scan-manual-input" type="number" inputmode="numeric" placeholder="Barcode-Nummer eingeben…" style="flex:1;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:'DM Mono',monospace;font-size:13px;padding:9px 12px;outline:none;-webkit-appearance:none" onkeydown="if(event.key==='Enter')manualScan()"/>
+      <button onclick="manualScan()" style="background:rgba(255,255,255,0.1);border:0.5px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:13px;font-weight:500;padding:9px 14px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif">OK</button>
     </div>
+    <!-- Hidden helper div for photo scan -->
+    <div id="scan-photo-helper" style="display:none"></div>
+    <input type="file" id="scan-photo-input" accept="image/*" capture="environment" style="display:none" onchange="decodePhotoFile(event)"/>
   </div>
 </div>
 
@@ -1094,12 +1110,13 @@ function closeHelp(){document.getElementById('help-overlay').classList.remove('s
 // ── Barcode Scan ─────────────────────────────────────────────────────────────
 // ── Barcode Scanner ────────────────────────────────────────────────────────────
 let html5Scanner=null;
+let photoHelper=null;
 let scanLastCode='';
 let scanStatusTimer=null;
 
 async function loadScanLib(){
   if(window.Html5Qrcode) return;
-  await new Promise((res,rej)=>{
+  await new Promise(function(res,rej){
     const s=document.createElement('script');
     s.src='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
     s.onload=res; s.onerror=rej;
@@ -1174,9 +1191,32 @@ async function openScan(){
 
 function manualScan(){
   const val=document.getElementById('scan-manual-input').value.trim();
-  if(!val){return;}
+  if(!val)return;
   closeScan();
   fetchBarcode(val);
+}
+
+function scanByPhoto(){
+  document.getElementById('scan-photo-input').click();
+}
+
+async function decodePhotoFile(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  event.target.value='';
+  const preview=document.getElementById('scan-photo-preview');
+  if(preview) preview.style.display='flex';
+  try{
+    await loadScanLib();
+    if(!photoHelper) photoHelper=new Html5Qrcode('scan-photo-helper',{verbose:false});
+    const result=await photoHelper.scanFile(file,false);
+    if(preview) preview.style.display='none';
+    closeScan();
+    fetchBarcode(result);
+  }catch(e){
+    if(preview) preview.style.display='none';
+    showScanStatus('Kein Barcode gefunden - nochmal versuchen','rgba(248,113,113,0.85)');
+  }
 }
 
 function showScanError(emoji,title,msg){
