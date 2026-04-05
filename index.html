@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>EatClean</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#0f0f11;--bg2:#18181c;--bg3:#222228;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#f0f0f2;--text2:#9090a0;--text3:#55556a;
+  --green:#4ade80;--blue:#60a5fa;--accent:#7c6ef5;
+  --orange:#fb923c;--red:#f87171;--yellow:#facc15;
+  --radius:12px;--radius-sm:8px;
+}
+body.light{
+  --bg:#f0f0f5;--bg2:#ffffff;--bg3:#e8e8ef;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#111113;--text2:#60606a;--text3:#aaaabc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{overflow:hidden;height:100%;overscroll-behavior:none}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow:hidden;height:100%;overscroll-behavior:none}
+*::-webkit-scrollbar{width:0;height:0}*{scrollbar-width:none}
+.container{max-width:480px;margin:0 auto}
+.scroll-wrap{height:100vh;overflow-y:auto;overflow-x:hidden;padding:1.25rem 1rem 2rem;overscroll-behavior:none;-webkit-overflow-scrolling:touch}
+header{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:0;margin-bottom:0.65rem}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem 1.25rem}
+header h1{font-size:21px;font-weight:600;letter-spacing:-0.3px}
+header p{font-size:12px;color:var(--text2);margin-top:2px}
+.header-btns{display:flex;gap:6px;align-items:center}
+.hbtn{background:none;border:none;color:var(--text2);cursor:pointer;padding:0 4px;line-height:1;transition:color .2s;display:inline-flex;align-items:center}
+.hbtn:hover{color:var(--accent)}
+.tabs{display:flex;border-top:0.5px solid var(--border)}
+.tab-btn{flex:1;padding:11px 2px;border:none;border-radius:0;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:color .2s;background:transparent;color:var(--text2);border-bottom:2px solid transparent;text-align:center}
+.tab-btn.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+.tab-btn:first-child{border-bottom-left-radius:calc(var(--radius) - 1px)}
+.tab-btn:last-child{border-bottom-right-radius:calc(var(--radius) - 1px)}
+.tab-content{display:none}.tab-content.active{display:block}
+
+/* Search */
+.search-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:14px}
+.search-row{display:flex;gap:8px}
+.search-wrap{position:relative;flex:1}
+.search-input{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;padding:12px 40px 12px 14px;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.search-input:focus{border-color:var(--accent)}
+.search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text2);cursor:pointer;background:none;border:none;font-size:16px;display:none}
+.scan-btn{background:var(--accent);border:none;border-radius:var(--radius-sm);width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .15s}
+.scan-btn:active{opacity:0.8}
+
+/* Empty state */
+.empty-state{text-align:center;padding:4rem 1rem}
+.empty-state-emoji{font-size:52px;margin-bottom:12px}
+.empty-state-title{font-size:15px;font-weight:500;color:var(--text2);margin-bottom:4px}
+.empty-state-sub{font-size:12px;color:var(--text3)}
+
+/* Food list */
+.food-list{display:flex;flex-direction:column;gap:6px}
+.food-item{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;transition:border-color .2s,transform .1s;display:flex;align-items:center;gap:12px}
+.food-item:active{transform:scale(0.98)}
+.food-item:hover{border-color:rgba(124,110,245,0.4)}
+.food-item-emoji{font-size:28px;width:40px;text-align:center;flex-shrink:0}
+.food-item-info{flex:1;min-width:0}
+.food-item-name{font-size:14px;font-weight:500}
+.food-item-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.food-item-right{text-align:right;flex-shrink:0}
+.food-item-kcal{font-family:'DM Mono',monospace;font-size:15px;font-weight:500;color:var(--orange)}
+.food-item-per{font-size:10px;color:var(--text3)}
+
+/* Overlay */
+.overlay{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.7);z-index:200;backdrop-filter:blur(4px)}
+.overlay.show{display:flex}
+.overlay-box{background:var(--bg2);border:0.5px solid var(--border2);border-radius:20px 20px 0 0;padding:1.25rem 1.25rem 2rem;width:100%;max-width:480px;animation:slideUp .3s cubic-bezier(.34,1.2,.64,1);max-height:90vh;overflow-y:auto}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.overlay-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+.overlay-food-emoji{font-size:36px;margin-right:10px;flex-shrink:0}
+.overlay-title{font-size:18px;font-weight:600;line-height:1.2;flex:1}
+.overlay-cat{font-size:11px;color:var(--text2);margin-top:3px}
+.overlay-close{background:var(--bg3);border:0.5px solid var(--border2);border-radius:50%;width:30px;height:30px;cursor:pointer;color:var(--text2);font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:8px}
+
+/* Macro cards */
+.macro-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.macro-card{background:var(--bg3);border-radius:var(--radius-sm);padding:12px;position:relative;overflow:hidden}
+.macro-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-sm) var(--radius-sm) 0 0}
+.macro-card.kcal::before{background:linear-gradient(90deg,#ea580c,#fb923c)}
+.macro-card.protein::before{background:linear-gradient(90deg,#3b82f6,#60a5fa)}
+.macro-card.carbs::before{background:linear-gradient(90deg,#ca8a04,#facc15)}
+.macro-card.fat::before{background:linear-gradient(90deg,#16a34a,#4ade80)}
+.macro-card.fiber::before{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.macro-card.sugar::before{background:linear-gradient(90deg,#be185d,#f472b6)}
+.macro-val{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;margin-bottom:2px}
+.macro-label{font-size:11px;color:var(--text2)}
+.macro-card.kcal .macro-val{color:var(--orange)}
+.macro-card.protein .macro-val{color:var(--blue)}
+.macro-card.carbs .macro-val{color:var(--yellow)}
+.macro-card.fat .macro-val{color:var(--green)}
+.macro-card.fiber .macro-val{color:var(--accent)}
+.macro-card.sugar .macro-val{color:#f472b6}
+
+/* Portion */
+.portion-section{background:var(--bg3);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px}
+.portion-title{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+.portion-row{display:flex;align-items:center;gap:10px}
+.portion-label{font-size:13px;color:var(--text2)}
+.portion-input{flex:1;background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Mono',monospace;font-size:20px;font-weight:500;padding:8px 12px;outline:none;text-align:center;-webkit-appearance:none}
+.portion-unit{font-size:13px;color:var(--text2);font-weight:500}
+.mini-macros{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.mini-macro{text-align:center;background:var(--bg2);border-radius:8px;padding:7px 4px}
+.mini-macro-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500}
+.mini-macro-label{font-size:9px;color:var(--text3);margin-top:1px}
+
+/* Quality chips */
+.quality-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.quality-chip{border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500}
+.quality-chip.good{background:rgba(74,222,128,0.1);color:var(--green);border:0.5px solid rgba(74,222,128,0.3)}
+.quality-chip.neutral{background:var(--bg3);color:var(--text2);border:0.5px solid var(--border)}
+.quality-chip.bad{background:rgba(248,113,113,0.1);color:var(--red);border:0.5px solid rgba(248,113,113,0.3)}
+
+/* Loading */
+.loading{text-align:center;padding:2rem;color:var(--text2);font-size:13px}
+.loading-spinner{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Scan */
+.scan-overlay{position:fixed;inset:0;background:#000;z-index:300;display:none;flex-direction:column}
+.scan-overlay.show{display:flex}
+.scan-header{padding:1rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.scan-title{color:#fff;font-size:16px;font-weight:600}
+.scan-close{background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;color:#fff;font-size:18px}
+#scan-video{width:100%;flex:1;object-fit:cover;display:none}
+.scan-frame-wrap{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.scan-frame{width:260px;height:160px;position:relative}
+.sfc{position:absolute;width:28px;height:28px;border-color:#7c6ef5;border-style:solid;border-width:0}
+.sfc.tl{top:0;left:0;border-top-width:3px;border-left-width:3px;border-radius:4px 0 0 0}
+.sfc.tr{top:0;right:0;border-top-width:3px;border-right-width:3px;border-radius:0 4px 0 0}
+.sfc.bl{bottom:0;left:0;border-bottom-width:3px;border-left-width:3px;border-radius:0 0 0 4px}
+.sfc.br{bottom:0;right:0;border-bottom-width:3px;border-right-width:3px;border-radius:0 0 4px 0}
+.scan-hint{color:rgba(255,255,255,0.7);text-align:center;font-size:13px;padding:1rem;flex-shrink:0}
+.scan-no-support{color:#fff;text-align:center;padding:2rem;flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:13px;color:rgba(255,255,255,0.6);max-width:300px;margin:0 auto}
+
+/* Wissen */
+.wissen-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.wissen-header{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wissen-emoji{font-size:24px;flex-shrink:0}
+.wissen-title{font-size:14px;font-weight:600;flex:1}
+.wissen-arrow{color:var(--text3);transition:transform .3s;font-size:12px}
+.wissen-card.open .wissen-arrow{transform:rotate(180deg)}
+.wissen-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.wissen-card.open .wissen-body{max-height:800px}
+.wissen-content{padding:0 1.25rem 1.25rem;font-size:13px;color:var(--text2);line-height:1.8}
+.wissen-content b{color:var(--text)}
+.tag{display:inline-block;background:var(--bg3);border-radius:4px;padding:2px 8px;font-size:11px;margin:2px;color:var(--text2)}
+.tag.green{background:rgba(74,222,128,0.1);color:var(--green)}
+.tag.red{background:rgba(248,113,113,0.1);color:var(--red)}
+.tag.blue{background:rgba(96,165,250,0.1);color:var(--blue)}
+.tag.orange{background:rgba(251,146,60,0.1);color:var(--orange)}
+.tag.purple{background:rgba(124,110,245,0.1);color:var(--accent)}
+
+.section-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;padding:0 2px}
+.vit-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--border)}
+.vit-row:last-child{border-bottom:none}
+.vit-name{font-size:13px;color:var(--text2)}
+.vit-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--text)}
+.vit-bar-wrap{flex:1;margin:0 10px;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.vit-bar{height:100%;border-radius:2px;transition:width .5s ease}
+.vit-bar.vitamin{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.vit-bar.mineral{background:linear-gradient(90deg,#0e7490,#22d3ee)}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:9px 18px;font-size:13px;color:var(--text);z-index:500;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-overflow:ellipsis;overflow:hidden}
+.toast.show{opacity:1}
+
+/* Numpad */
+.numpad-overlay{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.6);z-index:400;padding:0}
+.numpad-overlay.show{display:flex}
+.numpad-box{background:var(--bg2);border:0.5px solid var(--border2);border-radius:20px 20px 0 0;padding:1rem 1rem 1.5rem;width:100%;max-width:480px;animation:slideUp .25s cubic-bezier(.34,1.2,.64,1)}
+.numpad-header{text-align:center;margin-bottom:0.75rem;position:relative}
+.numpad-field-label{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px}
+.numpad-display{font-size:36px;font-weight:600;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:2px;min-height:44px;line-height:1}
+.numpad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.numpad-btn{background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius);font-size:20px;font-family:'DM Mono',monospace;font-weight:500;color:var(--text);padding:13px 0;cursor:pointer;transition:background .1s,transform .08s;-webkit-tap-highlight-color:transparent}
+.numpad-btn:active{background:var(--border2);transform:scale(0.95)}
+.numpad-btn.del{font-size:18px;color:var(--text2)}
+.numpad-btn.zero{grid-column:span 2}
+.numpad-confirm{width:100%;padding:13px;background:#22c55e;color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity .15s}
+.numpad-confirm:active{opacity:.85}
+/* Overlay (help/info sheet) */
+.sheet-overlay{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.7);z-index:300;padding:0}
+.sheet-overlay.show{display:flex}
+.sheet-box{background:var(--bg2);border:0.5px solid var(--border2);border-radius:20px 20px 0 0;padding:1.25rem 1.25rem 2rem;width:100%;max-width:480px;max-height:80vh;display:flex;flex-direction:column;animation:slideUp .3s cubic-bezier(.34,1.2,.64,1)}
+.sheet-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-shrink:0}
+.sheet-title{font-size:15px;font-weight:600}
+.sheet-close{background:none;border:0.5px solid var(--border2);border-radius:50%;width:28px;height:28px;color:var(--text2);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+.sheet-body{overflow-y:auto;flex:1}
+.help-section{margin-bottom:1.25rem}
+.help-section-title{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:6px}
+.help-row{display:flex;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px;color:var(--text2);line-height:1.5}
+.help-row:last-child{border-bottom:none}
+.help-row b{color:var(--text)}
+/* Fav star */
+.fav-btn{background:none;border:none;cursor:pointer;font-size:22px;line-height:1;padding:0;transition:transform .2s}
+.fav-btn:active{transform:scale(1.3)}
+/* Fav list */
+.fav-empty{text-align:center;padding:3rem 1rem;color:var(--text3);font-size:13px}
+</style>
+</head>
+<body>
+<div class="scroll-wrap">
+<div class="container">
+
+<header>
+  <div class="header-top">
+    <div>
+      <h1>EatClean</h1>
+      <p>Nährwert-Informationen</p>
+    </div>
+    <div class="header-btns">
+      <button class="hbtn" onclick="openHelp()" title="Hilfe">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </button>
+      <button class="hbtn" onclick="toggleTheme()" title="Design wechseln">
+        <svg id="icon-sun" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="icon-moon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('suche')">Suche</button>
+    <button class="tab-btn" onclick="switchTab('favoriten')">Favoriten</button>
+    <button class="tab-btn" onclick="switchTab('wissen')">Wissen</button>
+  </div>
+</header>
+
+<!-- SUCHE -->
+<div class="tab-content active" id="tab-suche">
+  <div class="search-card">
+    <div class="search-row">
+      <div class="search-wrap">
+        <input class="search-input" id="search-input" type="text" placeholder="Lebensmittel suchen…" oninput="onSearch(this.value)" autocomplete="off"/>
+        <button class="search-clear" id="search-clear" onclick="clearSearch()">&#10005;</button>
+      </div>
+      <button class="scan-btn" onclick="openScan()" title="Barcode scannen">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="17" y="2" width="5" height="5" rx="1"/><rect x="2" y="17" width="5" height="5" rx="1"/><line x1="9" y1="3" x2="9" y2="7"/><line x1="12" y1="2" x2="12" y2="7"/><line x1="15" y1="3" x2="15" y2="7"/><line x1="9" y1="17" x2="9" y2="21"/><line x1="12" y1="17" x2="12" y2="22"/><line x1="15" y1="17" x2="15" y2="21"/><line x1="17" y1="9" x2="21" y2="9"/><line x1="17" y1="12" x2="22" y2="12"/><line x1="17" y1="15" x2="21" y2="15"/><line x1="2" y1="9" x2="7" y2="9"/><line x1="2" y1="12" x2="7" y2="12"/><line x1="2" y1="15" x2="7" y2="15"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Inline food detail (shown instead of list when item selected) -->
+  <div id="food-detail" style="display:none;margin-bottom:12px">
+    <div class="search-card" style="margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span id="det-emoji" style="font-size:32px"></span>
+        <div style="flex:1">
+          <div id="det-name" style="font-size:16px;font-weight:600"></div>
+          <div id="det-cat" style="font-size:11px;color:var(--text2);margin-top:2px"></div>
+        </div>
+        <button class="fav-btn" id="fav-star" onclick="toggleFav()" title="Favorit">☆</button>
+        <button onclick="closeDetail()" style="background:var(--bg3);border:0.5px solid var(--border2);border-radius:50%;width:28px;height:28px;cursor:pointer;color:var(--text2);font-size:13px;display:flex;align-items:center;justify-content:center">&#10005;</button>
+      </div>
+      <div class="quality-row" id="det-quality"></div>
+      <div class="portion-section" style="margin-bottom:10px">
+        <div class="portion-title">Portionsrechner</div>
+        <div class="portion-row">
+          <span class="portion-label">Menge</span>
+          <input class="portion-input" id="det-portion" type="number" value="100" min="1" max="9999" readonly onclick="openNumpad()" style="cursor:pointer"/>
+          <span class="portion-unit">g</span>
+        </div>
+        <div class="mini-macros" id="det-portion-macros"></div>
+      </div>
+      <div class="section-label">Nährwerte pro 100g</div>
+      <div class="macro-grid" id="det-macros"></div>
+      <div id="det-vitamins-wrap" style="display:none">
+        <div class="section-label" style="margin-top:4px">Vitamine & Mineralien pro 100g</div>
+        <div id="det-vitamins"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="search-results">
+    <div class="empty-state">
+      <div class="empty-state-emoji">🥗</div>
+      <div class="empty-state-title">Lebensmittel eingeben</div>
+      <div class="empty-state-sub">Suche oder scanne einen Barcode</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- FAVORITEN -->
+<div class="tab-content" id="tab-favoriten">
+  <div id="fav-list"></div>
+</div>
+
+<!-- WISSEN -->
+<div class="tab-content" id="tab-wissen">
+  <div style="background:linear-gradient(135deg,rgba(124,110,245,0.15),rgba(96,165,250,0.1));border:0.5px solid rgba(124,110,245,0.3);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:14px;font-size:13px;color:var(--text2);line-height:1.7">
+    💡 <b style="color:var(--text)">Ernährungswissen kompakt</b> – alles über Nährstoffe und gesunde Lebensmittel.
+  </div>
+  <div class="wissen-card" onclick="toggleWissen(this)">
+    <div class="wissen-header"><span class="wissen-emoji">🥩</span><span class="wissen-title">Protein – warum es so wichtig ist</span><span class="wissen-arrow">▼</span></div>
+    <div class="wissen-body"><div class="wissen-content">
+      Protein ist der <b>Baustoff deines Körpers</b> – für Muskeln, Haut, Haare und Enzyme.<br><br>
+      <b>Empfehlung:</b> 1,6–2,2g pro kg Körpergewicht bei Sport, mind. 0,8g/kg ohne Sport.<br><br>
+      <b>Top Quellen:</b><br>
+      <span class="tag green">Hühnerbrust 31g/100g</span><span class="tag green">Thunfisch 25g/100g</span><span class="tag green">Skyr 11g/100g</span><span class="tag green">Eier 13g/100g</span><span class="tag green">Linsen 9g/100g</span>
+    </div></div>
+  </div>
+  <div class="wissen-card" onclick="toggleWissen(this)">
+    <div class="wissen-header"><span class="wissen-emoji">🍬</span><span class="wissen-title">Warum Zucker so schädlich ist</span><span class="wissen-arrow">▼</span></div>
+    <div class="wissen-body"><div class="wissen-content">
+      🔴 Insulinspitzen → Heißhunger → Gewichtszunahme<br>
+      🔴 Fördert chronische Entzündungen<br>
+      🔴 Schadet der Leber & macht abhängig<br>
+      🔴 Erhöht Diabetes-Risiko<br><br>
+      <b>Versteckt in:</b> <span class="tag red">Fruchtjoghurt</span><span class="tag red">Fruchtsäfte</span><span class="tag red">Ketchup</span><span class="tag red">Müsli</span><span class="tag red">Brot</span><br><br>
+      <b>WHO:</b> Max. 25g (Frauen) / 37g (Männer) freier Zucker täglich.
+    </div></div>
+  </div>
+  <div class="wissen-card" onclick="toggleWissen(this)">
+    <div class="wissen-header"><span class="wissen-emoji">🥗</span><span class="wissen-title">Die gesündesten Lebensmittel</span><span class="wissen-arrow">▼</span></div>
+    <div class="wissen-body"><div class="wissen-content">
+      <b>Nährstoff-Champions:</b> <span class="tag green">Spinat</span><span class="tag green">Brokkoli</span><span class="tag green">Lachs</span><span class="tag green">Eier</span><span class="tag green">Avocado</span><br><br>
+      <b>Protein:</b> <span class="tag blue">Hühnerbrust</span><span class="tag blue">Magerquark</span><span class="tag blue">Linsen</span><br><br>
+      <b>Gesunde Fette:</b> <span class="tag orange">Olivenöl</span><span class="tag orange">Walnüsse</span><span class="tag orange">Chiasamen</span><br><br>
+      <b>Komplexe KH:</b> <span class="tag purple">Haferflocken</span><span class="tag purple">Quinoa</span><span class="tag purple">Süßkartoffel</span>
+    </div></div>
+  </div>
+  <div class="wissen-card" onclick="toggleWissen(this)">
+    <div class="wissen-header"><span class="wissen-emoji">⚖️</span><span class="wissen-title">Makronährstoffe verstehen</span><span class="wissen-arrow">▼</span></div>
+    <div class="wissen-body"><div class="wissen-content">
+      <b>Protein</b> 4 kcal/g – Baustoff, sättigt gut, kaum als Fett gespeichert.<br>
+      <b>Kohlenhydrate</b> 4 kcal/g – Einfach (Zucker) kurz sättigend, Komplex (Vollkorn) lang sättigend.<br>
+      <b>Fett</b> 9 kcal/g – Lebensnotwendig. Ungesättigte Fette sind gut.<br><br>
+      <span class="tag blue">Protein 25–35%</span><span class="tag purple">KH 40–50%</span><span class="tag orange">Fett 20–30%</span>
+    </div></div>
+  </div>
+  <div class="wissen-card" onclick="toggleWissen(this)">
+    <div class="wissen-header"><span class="wissen-emoji">🔥</span><span class="wissen-title">Kalorien richtig verstehen</span><span class="wissen-arrow">▼</span></div>
+    <div class="wissen-body"><div class="wissen-content">
+      <b>Defizit</b> → Abnehmen &nbsp;<b>Überschuss</b> → Muskelaufbau<br><br>
+      Grundumsatz: 👩 Gewicht × 22 kcal &nbsp;👨 Gewicht × 25 kcal<br><br>
+      100 kcal Differenz täglich = ca. 5kg Unterschied pro Jahr.
+    </div></div>
+  </div>
+  <div class="wissen-card" onclick="toggleWissen(this)">
+    <div class="wissen-header"><span class="wissen-emoji">💧</span><span class="wissen-title">Hydration & Wasser</span><span class="wissen-arrow">▼</span></div>
+    <div class="wissen-body"><div class="wissen-content">
+      <b>Empfehlung:</b> 30–40ml/kg täglich – bei 80kg = 2,4–3,2 Liter.<br><br>
+      🟡 Dunkelgelber Urin &nbsp;🟡 Kopfschmerzen &nbsp;🟡 Heißhunger<br>– alles mögliche Zeichen von Dehydration.
+    </div></div>
+  </div>
+  <div class="wissen-card" onclick="toggleWissen(this)">
+    <div class="wissen-header"><span class="wissen-emoji">🌿</span><span class="wissen-title">Ballaststoffe – unterschätzt & wichtig</span><span class="wissen-arrow">▼</span></div>
+    <div class="wissen-body"><div class="wissen-content">
+      Mind. <b>30g täglich</b> – die meisten essen nur 15–20g.<br><br>
+      <span class="tag green">Chiasamen 34g</span><span class="tag green">Leinsamen 27g</span><span class="tag green">Haferflocken 10g</span><span class="tag green">Avocado 7g</span><br><br>
+      Sättigt lang, fördert Darmflora, senkt Cholesterin, stabilisiert Blutzucker.
+    </div></div>
+  </div>
+</div>
+
+</div></div>
+
+
+<!-- Numpad -->
+<div class="numpad-overlay" id="numpad-overlay" onclick="numpadOutside(event)">
+  <div class="numpad-box">
+    <div class="numpad-header">
+      <button class="sheet-close" onclick="closeNumpad()" style="position:absolute;top:0;right:0">✕</button>
+      <div class="numpad-field-label">Menge (g)</div>
+      <div class="numpad-display" id="numpad-display">100</div>
+    </div>
+    <div class="numpad-grid">
+      <button class="numpad-btn" onclick="npInput('1')">1</button>
+      <button class="numpad-btn" onclick="npInput('2')">2</button>
+      <button class="numpad-btn" onclick="npInput('3')">3</button>
+      <button class="numpad-btn" onclick="npInput('4')">4</button>
+      <button class="numpad-btn" onclick="npInput('5')">5</button>
+      <button class="numpad-btn" onclick="npInput('6')">6</button>
+      <button class="numpad-btn" onclick="npInput('7')">7</button>
+      <button class="numpad-btn" onclick="npInput('8')">8</button>
+      <button class="numpad-btn" onclick="npInput('9')">9</button>
+      <button class="numpad-btn zero" onclick="npInput('0')">0</button>
+      <button class="numpad-btn del" onclick="npDel()"><span style="font-size:26px;line-height:1">⌫</span></button>
+    </div>
+    <button class="numpad-confirm" onclick="npConfirm()">✓ Übernehmen</button>
+  </div>
+</div>
+
+<!-- Help Overlay -->
+<div class="sheet-overlay" id="help-overlay" onclick="if(event.target===this)closeHelp()">
+  <div class="sheet-box">
+    <div class="sheet-header">
+      <span class="sheet-title">❓ Anleitung</span>
+      <button class="sheet-close" onclick="closeHelp()">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="help-section">
+        <div class="help-section-title">🔍 Suche</div>
+        <div class="help-row"><div><b>Lebensmittel suchen</b> – Tippe einen Namen ein. Exakte Treffer erscheinen zuerst.</div></div>
+        <div class="help-row"><div><b>Barcode scannen</b> – Tippe auf das lila Symbol rechts neben der Suche. Die Kamera öffnet sich und scannt automatisch. Das Produkt wird über die Open Food Facts Datenbank geladen.</div></div>
+        <div class="help-row"><div><b>Detailansicht</b> – Tippe auf ein Lebensmittel um Nährwerte, Vitamine und Mineralien zu sehen.</div></div>
+        <div class="help-row"><div><b>Portionsrechner</b> – Tippe auf das Gramm-Feld um die Menge anzupassen. Die Nährwerte passen sich automatisch an.</div></div>
+      </div>
+      <div class="help-section">
+        <div class="help-section-title">⭐ Favoriten</div>
+        <div class="help-row"><div><b>Favorit speichern</b> – Öffne ein Lebensmittel und tippe auf den ☆-Stern oben rechts. Er färbt sich gelb wenn gespeichert.</div></div>
+        <div class="help-row"><div><b>Favoriten abrufen</b> – Im Tab „Favoriten" findest du alle gespeicherten Lebensmittel. Tippe drauf für die Detailansicht, oder lösche sie mit ✕.</div></div>
+      </div>
+      <div class="help-section">
+        <div class="help-section-title">📚 Wissen</div>
+        <div class="help-row"><div>7 Themen zu Ernährung, Makros, Zucker, Wasser und mehr – tippe auf eine Karte um sie aufzuklappen.</div></div>
+      </div>
+      <div class="help-section">
+        <div class="help-section-title">🌙 / ☀️ Design</div>
+        <div class="help-row"><div>Oben rechts im Header zwischen Dunkel- und Hellmodus wechseln.</div></div>
+      </div>
+      <div class="help-section">
+        <div class="help-section-title">📊 Vitamine & Mineralien</div>
+        <div class="help-row"><div>Im Detailbereich siehst du farbige Balken für Vitamine (lila) und Mineralien (türkis). Der Balken zeigt wie viel Prozent des täglichen Bedarfs 100g liefern.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scan Overlay -->
+<div class="scan-overlay" id="scan-overlay">
+  <div class="scan-header">
+    <div class="scan-title">Barcode scannen</div>
+    <button class="scan-close" onclick="closeScan()">&#10005;</button>
+  </div>
+  <div style="position:relative;flex:1;overflow:hidden">
+    <video id="scan-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;display:none"></video>
+    <div class="scan-frame-wrap" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+      <div class="scan-frame"><div class="sfc tl"></div><div class="sfc tr"></div><div class="sfc bl"></div><div class="sfc br"></div></div>
+    </div>
+    <div class="scan-no-support" id="scan-no-support">
+      <div style="font-size:48px">📵</div>
+      <div style="font-size:15px;font-weight:600;color:#fff">Scan nicht verfügbar</div>
+      <div>Kamera-Zugriff nicht möglich oder Browser unterstützt keinen Barcode-Scan. Bitte manuell suchen.</div>
+    </div>
+  </div>
+  <div class="scan-hint">Barcode im Rahmen positionieren</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+const FOODS=[
+  {name:'Hühnerbrust',cat:'Fleisch',emoji:'🍗',kcal:120,p:25,c:0,f:2,fi:0,sugar:0,quality:['highProtein','lowFat','lowCarb'],vitB12:0.3,fe:0.7,mg:29,k:370,zn:1.1},
+  {name:'Hähnchenschenkel',cat:'Fleisch',emoji:'🍗',kcal:177,p:18,c:0,f:11,fi:0,sugar:0,quality:['highProtein'],vitB12:0.3,fe:1.0,mg:22,k:250,zn:1.8},
+  {name:'Rinderhack (5% Fett)',cat:'Fleisch',emoji:'🥩',kcal:130,p:21,c:0,f:5,fi:0,sugar:0,quality:['highProtein','lowFat'],vitB12:2.5,fe:2.3,mg:21,k:310,zn:4.5},
+  {name:'Rinderhack (20% Fett)',cat:'Fleisch',emoji:'🥩',kcal:235,p:17,c:0,f:19,fi:0,sugar:0,quality:['highProtein'],vitB12:2.5,fe:2.0,mg:18,k:270,zn:4.0},
+  {name:'Schweineschnitzel',cat:'Fleisch',emoji:'🍖',kcal:143,p:22,c:0,f:6,fi:0,sugar:0,quality:['highProtein'],vitB12:0.8,fe:0.9,mg:25,k:360,zn:2.0},
+  {name:'Lachs',cat:'Fisch',emoji:'🐟',kcal:208,p:20,c:0,f:14,fi:0,sugar:0,quality:['highProtein','omega3'],vitD:16,vitB12:3.2,vitE:1.1,fe:0.4,mg:27,k:420,zn:0.6},
+  {name:'Thunfisch (Dose)',cat:'Fisch',emoji:'🐟',kcal:116,p:25,c:0,f:1,fi:0,sugar:0,quality:['highProtein','lowFat','lowCalorie'],vitD:4,vitB12:2.2,fe:1.0,mg:31,k:290,zn:0.9},
+  {name:'Garnelen',cat:'Fisch',emoji:'🦐',kcal:85,p:18,c:0,f:1,fi:0,sugar:0,quality:['highProtein','lowFat','lowCalorie'],vitB12:1.2,fe:0.5,mg:35,k:220,zn:1.5},
+  {name:'Kabeljau',cat:'Fisch',emoji:'🐟',kcal:82,p:18,c:0,f:1,fi:0,sugar:0,quality:['highProtein','lowFat','lowCalorie'],vitD:2,vitB12:1.0,fe:0.5,mg:28,k:400,zn:0.5},
+  {name:'Makrele',cat:'Fisch',emoji:'🐟',kcal:205,p:19,c:0,f:14,fi:0,sugar:0,quality:['highProtein','omega3'],vitD:18,vitB12:8.0,vitE:1.5,fe:1.1,mg:30,k:310,zn:0.7},
+  {name:'Ei (Hühnerei)',cat:'Milch & Eier',emoji:'🥚',kcal:155,p:13,c:1,f:11,fi:0,sugar:1,quality:['highProtein'],vitA:140,vitD:2.9,vitB12:1.3,vitE:1.1,fe:1.8,mg:12,k:140,zn:1.3,ca:56},
+  {name:'Eiweiß',cat:'Milch & Eier',emoji:'🥚',kcal:52,p:11,c:1,f:0,fi:0,sugar:0,quality:['highProtein','lowFat','lowCalorie'],vitB12:0.1,mg:11,k:163,zn:0.0},
+  {name:'Magerquark',cat:'Milch & Eier',emoji:'🥛',kcal:67,p:12,c:4,f:0,fi:0,sugar:4,quality:['highProtein','lowFat'],vitB12:0.8,ca:85,mg:12,k:160,zn:0.7},
+  {name:'Skyr',cat:'Milch & Eier',emoji:'🥛',kcal:65,p:11,c:4,f:0,fi:0,sugar:4,quality:['highProtein','lowFat'],vitB12:0.9,ca:130,mg:15,k:180,zn:0.6},
+  {name:'Griechischer Joghurt (0%)',cat:'Milch & Eier',emoji:'🥛',kcal:59,p:10,c:4,f:0,fi:0,sugar:4,quality:['highProtein','lowFat'],vitB12:0.5,ca:110,mg:12,k:150,zn:0.5},
+  {name:'Hüttenkäse',cat:'Milch & Eier',emoji:'🧀',kcal:98,p:11,c:3,f:4,fi:0,sugar:3,quality:['highProtein'],vitB12:0.5,ca:83,mg:8,k:85,zn:0.6},
+  {name:'Mozzarella',cat:'Milch & Eier',emoji:'🧀',kcal:280,p:18,c:3,f:22,fi:0,sugar:1,quality:['highProtein'],vitA:150,vitB12:1.0,ca:400,mg:19,k:95,zn:2.9},
+  {name:'Cheddar',cat:'Milch & Eier',emoji:'🧀',kcal:403,p:25,c:1,f:33,fi:0,sugar:0,quality:['highProtein'],vitA:250,vitB12:0.8,ca:720,mg:28,k:98,zn:3.1},
+  {name:'Haferflocken',cat:'Getreide',emoji:'🌾',kcal:372,p:13,c:58,f:7,fi:10,sugar:1,quality:['highFiber','complex'],vitE:0.9,fe:4.7,mg:138,k:410,zn:3.6,ca:54},
+  {name:'Weißer Reis (gekocht)',cat:'Getreide',emoji:'🍚',kcal:130,p:3,c:28,f:0,fi:0,sugar:0,quality:['lowFat'],mg:12,k:35,fe:0.2},
+  {name:'Brauner Reis (gekocht)',cat:'Getreide',emoji:'🍚',kcal:111,p:3,c:23,f:1,fi:2,sugar:0,quality:['complex','highFiber'],mg:43,k:79,fe:0.5,zn:0.6},
+  {name:'Quinoa (gekocht)',cat:'Getreide',emoji:'🌿',kcal:120,p:4,c:21,f:2,fi:3,sugar:1,quality:['complex','highFiber'],fe:1.5,mg:64,k:172,zn:1.1,ca:17},
+  {name:'Pasta (gekocht)',cat:'Getreide',emoji:'🍝',kcal:158,p:6,c:31,f:1,fi:2,sugar:1,quality:['lowFat'],fe:1.3,mg:25,k:44,zn:0.5},
+  {name:'Vollkornnudeln (gekocht)',cat:'Getreide',emoji:'🍝',kcal:124,p:5,c:23,f:1,fi:4,sugar:1,quality:['complex','highFiber'],fe:1.5,mg:45,k:85,zn:1.0},
+  {name:'Vollkornbrot',cat:'Getreide',emoji:'🍞',kcal:228,p:8,c:40,f:3,fi:8,sugar:3,quality:['complex','highFiber'],fe:2.5,mg:60,k:230,zn:1.8,ca:30},
+  {name:'Kartoffeln (gekocht)',cat:'Getreide',emoji:'🥔',kcal:77,p:2,c:17,f:0,fi:2,sugar:1,quality:['lowFat','lowCalorie'],vitC:13,fe:0.4,mg:21,k:410,zn:0.3},
+  {name:'Süßkartoffel (gekocht)',cat:'Getreide',emoji:'🍠',kcal:86,p:2,c:20,f:0,fi:3,sugar:5,quality:['lowFat','highFiber'],vitC:20,vitA:960,fe:0.7,mg:25,k:480,zn:0.3},
+  {name:'Brokkoli',cat:'Gemüse',emoji:'🥦',kcal:34,p:3,c:7,f:0,fi:3,sugar:2,quality:['lowCalorie','highFiber','vitamin'],vitC:89,vitA:31,vitK:102,vitE:0.8,fe:0.7,mg:21,k:316,zn:0.4,ca:47},
+  {name:'Spinat',cat:'Gemüse',emoji:'🥬',kcal:23,p:3,c:4,f:0,fi:2,sugar:0,quality:['lowCalorie','highFiber','vitamin'],vitC:28,vitA:469,vitK:483,fe:2.7,mg:79,k:558,zn:0.5,ca:99},
+  {name:'Paprika (rot)',cat:'Gemüse',emoji:'🫑',kcal:31,p:1,c:6,f:0,fi:2,sugar:5,quality:['lowCalorie','vitamin'],vitC:190,vitA:157,vitE:1.6,fe:0.4,mg:12,k:211,zn:0.2},
+  {name:'Zucchini',cat:'Gemüse',emoji:'🥒',kcal:17,p:1,c:3,f:0,fi:1,sugar:2,quality:['lowCalorie','lowCarb'],vitC:18,vitA:10,fe:0.4,mg:18,k:262,zn:0.3},
+  {name:'Karotten',cat:'Gemüse',emoji:'🥕',kcal:41,p:1,c:10,f:0,fi:3,sugar:5,quality:['lowCalorie','highFiber'],vitC:6,vitA:835,vitK:13,fe:0.3,mg:12,k:320,zn:0.2,ca:33},
+  {name:'Tomaten',cat:'Gemüse',emoji:'🍅',kcal:18,p:1,c:4,f:0,fi:1,sugar:3,quality:['lowCalorie','vitamin'],vitC:14,vitA:42,vitE:0.5,fe:0.5,mg:11,k:237,zn:0.2},
+  {name:'Avocado',cat:'Gemüse',emoji:'🥑',kcal:160,p:2,c:9,f:15,fi:7,sugar:1,quality:['highFiber','healthyFat'],vitC:10,vitE:2.1,vitK:21,fe:0.6,mg:29,k:485,zn:0.6},
+  {name:'Champignons',cat:'Gemüse',emoji:'🍄',kcal:22,p:3,c:3,f:0,fi:1,sugar:2,quality:['lowCalorie'],vitD:1.2,vitB12:0.1,fe:0.5,mg:9,k:318,zn:0.5},
+  {name:'Gurke',cat:'Gemüse',emoji:'🥒',kcal:15,p:1,c:4,f:0,fi:0,sugar:2,quality:['lowCalorie','lowCarb'],vitC:3,vitK:16,mg:13,k:147,zn:0.2},
+  {name:'Erbsen',cat:'Gemüse',emoji:'🟢',kcal:81,p:5,c:14,f:0,fi:5,sugar:5,quality:['highFiber'],vitC:40,vitA:38,fe:1.5,mg:33,k:244,zn:1.0,ca:25},
+  {name:'Apfel',cat:'Obst',emoji:'🍎',kcal:52,p:0,c:14,f:0,fi:2,sugar:10,quality:['lowCalorie','highFiber'],vitC:5,vitA:3,vitK:2,mg:5,k:107,zn:0.1,ca:6},
+  {name:'Banane',cat:'Obst',emoji:'🍌',kcal:89,p:1,c:23,f:0,fi:3,sugar:12,quality:['highFiber'],vitC:9,vitB12:0,mg:27,k:358,zn:0.2,ca:5},
+  {name:'Erdbeeren',cat:'Obst',emoji:'🍓',kcal:33,p:1,c:8,f:0,fi:2,sugar:5,quality:['lowCalorie','vitamin'],vitC:59,vitA:1,vitK:2,fe:0.4,mg:13,k:153,zn:0.1,ca:16},
+  {name:'Blaubeeren',cat:'Obst',emoji:'🫐',kcal:57,p:1,c:14,f:0,fi:2,sugar:10,quality:['vitamin','antioxidant'],vitC:10,vitA:3,vitK:19,mg:6,k:77,zn:0.2,ca:6},
+  {name:'Himbeeren',cat:'Obst',emoji:'🫐',kcal:52,p:1,c:12,f:1,fi:7,sugar:4,quality:['lowCalorie','highFiber','antioxidant'],vitC:26,vitA:2,vitK:8,fe:0.7,mg:22,k:151,zn:0.4,ca:25},
+  {name:'Orange',cat:'Obst',emoji:'🍊',kcal:47,p:1,c:12,f:0,fi:2,sugar:9,quality:['lowCalorie','vitamin'],vitC:53,vitA:11,fe:0.1,mg:10,k:181,zn:0.1,ca:40},
+  {name:'Mango',cat:'Obst',emoji:'🥭',kcal:60,p:1,c:15,f:0,fi:2,sugar:14,quality:['vitamin'],vitC:36,vitA:54,vitE:0.9,mg:10,k:168,zn:0.1,ca:11},
+  {name:'Wassermelone',cat:'Obst',emoji:'🍉',kcal:30,p:1,c:8,f:0,fi:0,sugar:6,quality:['lowCalorie'],vitC:8,vitA:28,mg:10,k:112,zn:0.1},
+  {name:'Kiwi',cat:'Obst',emoji:'🥝',kcal:61,p:1,c:15,f:1,fi:3,sugar:9,quality:['vitamin'],vitC:93,vitA:4,vitK:40,vitE:1.5,mg:17,k:312,zn:0.1,ca:34},
+  {name:'Mandeln',cat:'Nüsse',emoji:'🌰',kcal:579,p:21,c:22,f:50,fi:13,sugar:4,quality:['highFiber','healthyFat','highProtein'],vitE:25,fe:3.7,mg:268,k:705,zn:3.1,ca:264},
+  {name:'Walnüsse',cat:'Nüsse',emoji:'🌰',kcal:654,p:15,c:14,f:65,fi:7,sugar:3,quality:['omega3','healthyFat','highFiber'],vitE:0.7,fe:2.9,mg:158,k:441,zn:3.1,ca:98},
+  {name:'Erdnüsse',cat:'Nüsse',emoji:'🥜',kcal:567,p:26,c:16,f:49,fi:9,sugar:4,quality:['highProtein','highFiber'],vitE:8.3,fe:2.3,mg:168,k:705,zn:3.3,ca:93},
+  {name:'Erdnussbutter',cat:'Nüsse',emoji:'🥜',kcal:588,p:25,c:20,f:50,fi:6,sugar:5,quality:['highProtein'],vitE:9.0,fe:1.9,mg:154,k:649,zn:2.9,ca:49},
+  {name:'Chiasamen',cat:'Nüsse',emoji:'🌿',kcal:486,p:17,c:42,f:31,fi:34,sugar:0,quality:['highFiber','omega3'],vitC:1,fe:7.7,mg:335,k:407,zn:4.6,ca:631},
+  {name:'Leinsamen',cat:'Nüsse',emoji:'🌿',kcal:534,p:18,c:29,f:42,fi:27,sugar:2,quality:['highFiber','omega3'],vitE:0.3,fe:5.7,mg:392,k:813,zn:4.3,ca:255},
+  {name:'Kürbiskerne',cat:'Nüsse',emoji:'🎃',kcal:559,p:30,c:11,f:49,fi:6,sugar:1,quality:['highProtein'],vitE:2.2,fe:8.8,mg:592,k:809,zn:7.8,ca:46},
+  {name:'Olivenöl',cat:'Fette',emoji:'🫙',kcal:884,p:0,c:0,f:100,fi:0,sugar:0,quality:['healthyFat'],vitE:14,vitK:62},
+  {name:'Kokosöl',cat:'Fette',emoji:'🫙',kcal:862,p:0,c:0,f:100,fi:0,sugar:0,quality:[]},
+  {name:'Butter',cat:'Fette',emoji:'🧈',kcal:717,p:1,c:1,f:81,fi:0,sugar:1,quality:[],vitA:684,vitD:1.5,vitE:2.3},
+  {name:'Linsen (gekocht)',cat:'Hülsenfrüchte',emoji:'🫘',kcal:116,p:9,c:20,f:0,fi:8,sugar:2,quality:['highProtein','highFiber'],vitC:1,fe:3.3,mg:36,k:369,zn:1.3,ca:19},
+  {name:'Kichererbsen (gekocht)',cat:'Hülsenfrüchte',emoji:'🫘',kcal:164,p:9,c:27,f:3,fi:8,sugar:5,quality:['highProtein','highFiber'],vitC:1,fe:2.9,mg:48,k:291,zn:1.5,ca:49},
+  {name:'Schwarze Bohnen (gekocht)',cat:'Hülsenfrüchte',emoji:'🫘',kcal:132,p:9,c:24,f:1,fi:9,sugar:0,quality:['highProtein','highFiber'],fe:2.1,mg:70,k:355,zn:1.0,ca:27},
+  {name:'Edamame',cat:'Hülsenfrüchte',emoji:'🫘',kcal:122,p:11,c:10,f:5,fi:5,sugar:2,quality:['highProtein','highFiber'],vitC:6,vitA:9,fe:2.3,mg:64,k:436,zn:1.4,ca:63},
+  {name:'Tofu',cat:'Hülsenfrüchte',emoji:'⬜',kcal:76,p:8,c:2,f:4,fi:0,sugar:1,quality:['highProtein','lowCarb'],fe:1.6,mg:30,k:121,zn:0.8,ca:200},
+  {name:'Dunkle Schokolade (85%)',cat:'Sonstiges',emoji:'🍫',kcal:598,p:8,c:46,f:43,fi:11,sugar:24,quality:['antioxidant','highFiber'],vitE:1.8,fe:10,mg:228,k:715,zn:3.3,ca:73},
+  {name:'Vollmilchschokolade',cat:'Sonstiges',emoji:'🍫',kcal:535,p:7,c:60,f:30,fi:2,sugar:52,quality:['highSugar'],ca:220,mg:50,fe:1.5},
+  {name:'Honig',cat:'Sonstiges',emoji:'🍯',kcal:304,p:0,c:82,f:0,fi:0,sugar:82,quality:['highSugar'],mg:2,k:52,ca:6},
+  {name:'Hummus',cat:'Sonstiges',emoji:'🥙',kcal:166,p:8,c:14,f:10,fi:4,sugar:1,quality:['highProtein','highFiber'],vitC:0,fe:2.4,mg:71,k:228,zn:1.7,ca:38},
+  {name:'Protein-Shake (30g)',cat:'Sonstiges',emoji:'💪',kcal:120,p:24,c:3,f:2,fi:0,sugar:2,quality:['highProtein','lowFat'],ca:120,mg:30,k:200,zn:2.0},
+  {name:'Coca-Cola',cat:'Sonstiges',emoji:'🥤',kcal:42,p:0,c:11,f:0,fi:0,sugar:11,quality:['highSugar']},
+  {name:'Orangensaft',cat:'Sonstiges',emoji:'🍊',kcal:45,p:1,c:10,f:0,fi:0,sugar:9,quality:['highSugar'],vitC:50,k:200,ca:10},
+];
+const QL={
+  highProtein:{label:'Viel Protein',cls:'good'},
+  lowFat:{label:'Wenig Fett',cls:'good'},
+  lowCalorie:{label:'Kalorienarm',cls:'good'},
+  highFiber:{label:'Ballaststoffreich',cls:'good'},
+  healthyFat:{label:'Gesunde Fette',cls:'good'},
+  omega3:{label:'Omega-3',cls:'good'},
+  vitamin:{label:'Vitaminreich',cls:'good'},
+  antioxidant:{label:'Antioxidantien',cls:'good'},
+  complex:{label:'Kompl. KH',cls:'good'},
+  lowCarb:{label:'Low Carb',cls:'neutral'},
+  highSugar:{label:'Viel Zucker',cls:'bad'},
+};
+
+let darkMode=localStorage.getItem('ec_dark')!=='false';
+let curFood=null;
+let scanStream=null,scanDet=null,scanOn=false;
+let favorites=JSON.parse(localStorage.getItem('ec_favs')||'[]');
+let npVal='0';
+
+applyTheme();
+renderFavList();
+
+function applyTheme(){
+  document.body.classList.toggle('light',!darkMode);
+  document.getElementById('icon-sun').style.display=darkMode?'block':'none';
+  document.getElementById('icon-moon').style.display=darkMode?'none':'block';
+}
+function toggleTheme(){darkMode=!darkMode;localStorage.setItem('ec_dark',darkMode);applyTheme();}
+
+function switchTab(t){
+  document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  const idx={suche:0,favoriten:1,wissen:2}[t]||0;
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  if(t==='favoriten') renderFavList();
+}
+
+// ── Search ────────────────────────────────────────────────────────────────────
+function rankSearch(foods,q){
+  const ql=q.toLowerCase();
+  const exact=foods.filter(f=>f.name.toLowerCase()===ql);
+  const starts=foods.filter(f=>f.name.toLowerCase().startsWith(ql)&&f.name.toLowerCase()!==ql);
+  const incl=foods.filter(f=>f.name.toLowerCase().includes(ql)&&!f.name.toLowerCase().startsWith(ql));
+  return [...exact,...starts,...incl].slice(0,25);
+}
+
+function onSearch(q){
+  document.getElementById('search-clear').style.display=q?'block':'none';
+  closeDetail();
+  const res=document.getElementById('search-results');
+  if(!q.trim()){
+    res.innerHTML='<div class="empty-state"><div class="empty-state-emoji">🥗</div><div class="empty-state-title">Lebensmittel eingeben</div><div class="empty-state-sub">Suche oder scanne einen Barcode</div></div>';
+    return;
+  }
+  const found=rankSearch(FOODS,q);
+  if(!found.length){res.innerHTML='<div class="empty-state"><div class="empty-state-emoji">🔍</div><div class="empty-state-title">Keine Ergebnisse</div><div class="empty-state-sub">Anderen Begriff versuchen</div></div>';return;}
+  res.innerHTML='<div class="food-list">'+found.map(f=>`
+    <div class="food-item" onclick='showFood(${JSON.stringify(f.name)})'>
+      <div class="food-item-emoji">${f.emoji}</div>
+      <div class="food-item-info">
+        <div class="food-item-name">${f.name}</div>
+        <div class="food-item-sub">${f.cat} &middot; P ${f.p}g &middot; KH ${f.c}g &middot; F ${f.f}g</div>
+      </div>
+      <div class="food-item-right">
+        <div class="food-item-kcal">${f.kcal}</div>
+        <div class="food-item-per">kcal/100g</div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+function clearSearch(){document.getElementById('search-input').value='';onSearch('');closeDetail();}
+
+// ── Inline food detail ────────────────────────────────────────────────────────
+function showFood(name){
+  const f=FOODS.find(x=>x.name===name);
+  if(f) showFoodObj(f);
+}
+
+function showFoodObj(f){
+  curFood=f;
+  document.getElementById('det-emoji').textContent=f.emoji;
+  document.getElementById('det-name').textContent=f.name;
+  document.getElementById('det-cat').textContent=f.cat;
+  document.getElementById('det-portion').value=100;
+  document.getElementById('det-quality').innerHTML=(f.quality||[]).map(k=>QL[k]?'<span class="quality-chip '+QL[k].cls+'">'+QL[k].label+'</span>':'').join('');
+  // Fav star
+  const isFav=favorites.some(fv=>fv.name===f.name);
+  document.getElementById('fav-star').textContent=isFav?'★':'☆';
+  document.getElementById('fav-star').style.color=isFav?'#facc15':'var(--text3)';
+  renderDetail(100);
+  document.getElementById('food-detail').style.display='block';
+  document.getElementById('search-results').style.display='none';
+  document.querySelector('.scroll-wrap').scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderDetail(g){
+  if(!curFood)return;
+  const f=curFood,v=x=>Math.round(x*g/100*10)/10;
+  document.getElementById('det-macros').innerHTML=
+    '<div class="macro-card kcal"><div class="macro-val">'+f.kcal+'</div><div class="macro-label">Kalorien (kcal)</div></div>'+
+    '<div class="macro-card protein"><div class="macro-val">'+f.p+'g</div><div class="macro-label">Protein</div></div>'+
+    '<div class="macro-card carbs"><div class="macro-val">'+f.c+'g</div><div class="macro-label">Kohlenhydrate</div></div>'+
+    '<div class="macro-card fat"><div class="macro-val">'+f.f+'g</div><div class="macro-label">Fett</div></div>'+
+    (f.fi?'<div class="macro-card fiber"><div class="macro-val">'+f.fi+'g</div><div class="macro-label">Ballaststoffe</div></div>':'')+
+    (f.sugar?'<div class="macro-card sugar"><div class="macro-val">'+f.sugar+'g</div><div class="macro-label">davon Zucker</div></div>':'');
+  document.getElementById('det-portion-macros').innerHTML=
+    '<div class="mini-macro"><div class="mini-macro-val" style="color:var(--orange)">'+v(f.kcal)+'</div><div class="mini-macro-label">kcal</div></div>'+
+    '<div class="mini-macro"><div class="mini-macro-val" style="color:var(--blue)">'+v(f.p)+'g</div><div class="mini-macro-label">Protein</div></div>'+
+    '<div class="mini-macro"><div class="mini-macro-val" style="color:var(--yellow)">'+v(f.c)+'g</div><div class="mini-macro-label">KH</div></div>'+
+    '<div class="mini-macro"><div class="mini-macro-val" style="color:var(--green)">'+v(f.f)+'g</div><div class="mini-macro-label">Fett</div></div>';
+  // Vitamins
+  const VITAMINS=[
+    {key:'vitC',label:'Vitamin C',unit:'mg',max:90,cls:'vitamin'},
+    {key:'vitA',label:'Vitamin A',unit:'µg',max:800,cls:'vitamin'},
+    {key:'vitD',label:'Vitamin D',unit:'µg',max:20,cls:'vitamin'},
+    {key:'vitB12',label:'Vitamin B12',unit:'µg',max:4,cls:'vitamin'},
+    {key:'vitE',label:'Vitamin E',unit:'mg',max:15,cls:'vitamin'},
+    {key:'vitK',label:'Vitamin K',unit:'µg',max:80,cls:'vitamin'},
+  ];
+  const MINERALS=[
+    {key:'ca',label:'Kalzium',unit:'mg',max:1000,cls:'mineral'},
+    {key:'fe',label:'Eisen',unit:'mg',max:15,cls:'mineral'},
+    {key:'mg',label:'Magnesium',unit:'mg',max:375,cls:'mineral'},
+    {key:'k',label:'Kalium',unit:'mg',max:2000,cls:'mineral'},
+    {key:'zn',label:'Zink',unit:'mg',max:10,cls:'mineral'},
+  ];
+  const all=[...VITAMINS,...MINERALS].filter(x=>f[x.key]>0);
+  const wrap=document.getElementById('det-vitamins-wrap');
+  if(!all.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  document.getElementById('det-vitamins').innerHTML=all.map(x=>{
+    const pct=Math.min(100,Math.round(f[x.key]/x.max*100));
+    return '<div class="vit-row"><span class="vit-name">'+x.label+'</span><div class="vit-bar-wrap"><div class="vit-bar '+x.cls+'" style="width:'+pct+'%"></div></div><span class="vit-val">'+f[x.key]+' '+x.unit+'</span></div>';
+  }).join('');
+}
+
+function updateDetPortion(){
+  const g=parseInt(document.getElementById('det-portion').value)||100;
+  renderDetail(g);
+}
+function closeDetail(){
+  document.getElementById('food-detail').style.display='none';
+  document.getElementById('search-results').style.display='block';
+  curFood=null;
+}
+
+// ── Numpad ────────────────────────────────────────────────────────────────────
+function openNumpad(){
+  const cur=document.getElementById('det-portion').value||'100';
+  npVal=cur;
+  document.getElementById('numpad-display').textContent=npVal;
+  document.getElementById('numpad-overlay').classList.add('show');
+}
+function npInput(d){
+  if(npVal==='0') npVal=d; else npVal+=d;
+  if(parseInt(npVal)>9999) npVal='9999';
+  document.getElementById('numpad-display').textContent=npVal;
+}
+function npDel(){
+  npVal=npVal.length>1?npVal.slice(0,-1):'0';
+  document.getElementById('numpad-display').textContent=npVal;
+}
+function npConfirm(){
+  const g=parseInt(npVal)||100;
+  document.getElementById('det-portion').value=g;
+  renderDetail(g);
+  closeNumpad();
+}
+function closeNumpad(){document.getElementById('numpad-overlay').classList.remove('show');}
+function numpadOutside(e){if(e.target===document.getElementById('numpad-overlay'))closeNumpad();}
+
+// ── Favorites ─────────────────────────────────────────────────────────────────
+function toggleFav(){
+  if(!curFood)return;
+  const idx=favorites.findIndex(f=>f.name===curFood.name);
+  if(idx>=0){
+    favorites.splice(idx,1);
+    document.getElementById('fav-star').textContent='☆';
+    document.getElementById('fav-star').style.color='var(--text3)';
+    toast('Aus Favoriten entfernt');
+  } else {
+    favorites.push(curFood);
+    document.getElementById('fav-star').textContent='★';
+    document.getElementById('fav-star').style.color='#facc15';
+    toast('Zu Favoriten hinzugefügt ★');
+  }
+  localStorage.setItem('ec_favs',JSON.stringify(favorites));
+}
+
+function renderFavList(){
+  const el=document.getElementById('fav-list');
+  if(!el)return;
+  if(!favorites.length){
+    el.innerHTML='<div class="fav-empty">⭐<br><br>Noch keine Favoriten gespeichert.<br>Öffne ein Lebensmittel und tippe auf ☆</div>';
+    return;
+  }
+  el.innerHTML='<div class="food-list">'+favorites.map(f=>`
+    <div class="food-item" style="position:relative" onclick='showFavFood(${JSON.stringify(f.name)})'>
+      <div class="food-item-emoji">${f.emoji}</div>
+      <div class="food-item-info">
+        <div class="food-item-name">${f.name}</div>
+        <div class="food-item-sub">${f.cat} &middot; ${f.kcal} kcal &middot; P ${f.p}g</div>
+      </div>
+      <button onclick='removeFav(${JSON.stringify(f.name)},event)' style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:4px;flex-shrink:0">✕</button>
+    </div>`).join('')+'</div>';
+}
+
+function showFavFood(name){
+  const f=favorites.find(x=>x.name===name)||FOODS.find(x=>x.name===name);
+  if(!f)return;
+  switchTab('suche');
+  showFoodObj(f);
+}
+
+function removeFav(name,e){
+  e.stopPropagation();
+  favorites=favorites.filter(f=>f.name!==name);
+  localStorage.setItem('ec_favs',JSON.stringify(favorites));
+  renderFavList();
+  toast('Entfernt');
+}
+
+// ── Help ──────────────────────────────────────────────────────────────────────
+function openHelp(){document.getElementById('help-overlay').classList.add('show');}
+function closeHelp(){document.getElementById('help-overlay').classList.remove('show');}
+
+// ── Barcode Scan ─────────────────────────────────────────────────────────────
+async function openScan(){
+  document.getElementById('scan-overlay').classList.add('show');
+  document.getElementById('scan-no-support').style.display='none';
+  document.getElementById('scan-video').style.display='none';
+  if(!('BarcodeDetector' in window)){
+    document.getElementById('scan-no-support').style.display='flex';return;
+  }
+  try{
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    const vid=document.getElementById('scan-video');
+    vid.srcObject=scanStream;vid.style.display='block';
+    scanOn=true;
+    scanDet=new BarcodeDetector({formats:['ean_13','ean_8','code_128','upc_a','upc_e']});
+    scanLoop();
+  }catch(e){document.getElementById('scan-no-support').style.display='flex';}
+}
+async function scanLoop(){
+  if(!scanOn)return;
+  const vid=document.getElementById('scan-video');
+  if(vid.readyState===vid.HAVE_ENOUGH_DATA){
+    try{const bc=await scanDet.detect(vid);if(bc.length>0){closeScan();fetchBarcode(bc[0].rawValue);return;}}catch(e){}
+  }
+  if(scanOn)requestAnimationFrame(scanLoop);
+}
+function closeScan(){
+  scanOn=false;
+  if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null;}
+  document.getElementById('scan-overlay').classList.remove('show');
+  document.getElementById('scan-video').style.display='none';
+  document.getElementById('scan-no-support').style.display='none';
+}
+
+async function fetchBarcode(code){
+  switchTab('suche');
+  closeDetail();
+  document.getElementById('search-results').innerHTML='<div class="loading"><div class="loading-spinner"></div>Produkt wird geladen…</div>';
+  try{
+    const r=await fetch('https://world.openfoodfacts.org/api/v0/product/'+code+'.json');
+    const data=await r.json();
+    if(data.status===0||!data.product){
+      document.getElementById('search-results').innerHTML='<div class="empty-state"><div class="empty-state-emoji">❓</div><div class="empty-state-title">Produkt nicht gefunden</div><div class="empty-state-sub">Barcode: '+code+'</div></div>';
+      return;
+    }
+    const p=data.product,n=p.nutriments||{};
+    const food={
+      name:p.product_name_de||p.product_name||'Unbekanntes Produkt',
+      cat:(p.categories_tags?p.categories_tags[0].replace('en:','').replace(/-/g,' '):'Produkt'),
+      emoji:'📦',
+      kcal:Math.round(n['energy-kcal_100g']||n['energy-kcal']||0),
+      p:Math.round((n.proteins_100g||0)*10)/10,
+      c:Math.round((n.carbohydrates_100g||0)*10)/10,
+      f:Math.round((n.fat_100g||0)*10)/10,
+      fi:Math.round((n.fiber_100g||0)*10)/10,
+      sugar:Math.round((n.sugars_100g||0)*10)/10,
+      quality:[],
+    };
+    if(food.p>15)food.quality.push('highProtein');
+    if(food.f<3)food.quality.push('lowFat');
+    if(food.kcal<100)food.quality.push('lowCalorie');
+    if(food.fi>5)food.quality.push('highFiber');
+    if(food.sugar>20)food.quality.push('highSugar');
+    document.getElementById('search-results').innerHTML='';
+    showFoodObj(food);
+  }catch(e){
+    document.getElementById('search-results').innerHTML='<div class="empty-state"><div class="empty-state-emoji">⚠️</div><div class="empty-state-title">Fehler beim Laden</div><div class="empty-state-sub">Internetverbindung prüfen</div></div>';
+  }
+}
+
+function toggleWissen(c){c.classList.toggle('open');}
+let _t=null;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(_t);_t=setTimeout(()=>t.classList.remove('show'),2500);}
+</script>
+</body>
+</html>
