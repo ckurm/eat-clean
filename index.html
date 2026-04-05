@@ -287,11 +287,9 @@ header p{font-size:12px;color:var(--text2);margin-top:2px}
 
 <!-- FAVORITEN -->
 <div class="tab-content" id="tab-favoriten">
-  <div class="search-card" style="cursor:pointer;margin-bottom:12px" onclick="openFavBackup()">
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:15px;font-weight:600">Favoriten sichern</span>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
+  <div onclick="openFavBackup()" style="display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;cursor:pointer">
+    <span style="font-size:13px;color:var(--text2);font-weight:500">Favoriten sichern</span>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
   <div id="fav-list"></div>
 </div>
@@ -436,10 +434,10 @@ header p{font-size:12px;color:var(--text2);margin-top:2px}
       <button class="sheet-close" onclick="closeFavBackup()">✕</button>
     </div>
     <div class="sheet-body">
-      <p style="font-size:14px;color:var(--text2);margin-bottom:1.25rem;line-height:1.6">Exportiere deine Favoriten zur Sicherung oder zum Übertragen auf ein anderes Gerät.</p>
+      <p style="font-size:14px;color:var(--text2);margin-bottom:1.25rem;line-height:1.6">Exportiere deine Favoriten zur Sicherung oder übertrage sie auf ein anderes Gerät.</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <button onclick="importFavs()" style="background:rgba(74,222,128,0.12);color:var(--green);border:0.5px solid rgba(74,222,128,0.25);border-radius:var(--radius-sm);padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer">⬆ Importieren</button>
-        <button onclick="exportFavs()" style="background:rgba(96,165,250,0.12);color:var(--blue);border:0.5px solid rgba(96,165,250,0.25);border-radius:var(--radius-sm);padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer">⬇ Exportieren</button>
+        <button onclick="importFavs()" style="background:rgba(74,222,128,0.12);color:var(--green);border:0.5px solid rgba(74,222,128,0.25);border-radius:var(--radius-sm);padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer">Importieren</button>
+        <button onclick="exportFavs()" style="background:rgba(96,165,250,0.12);color:var(--blue);border:0.5px solid rgba(96,165,250,0.25);border-radius:var(--radius-sm);padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer">Exportieren</button>
       </div>
       <p style="font-size:11px;color:var(--text3);margin-top:10px;text-align:center">Daten werden nur lokal auf deinem Gerät gespeichert</p>
       <input type="file" id="fav-file-input" accept=".json" onchange="importFavsFile(event)" style="display:none"/>
@@ -771,9 +769,12 @@ function resolveSynonym(q){
   return SYNONYMS[ql]||null;
 }
 let darkMode=localStorage.getItem('ec_dark')!=='false';
+let _onlineTimer=null;
 let curFood=null;
 let favorites=JSON.parse(localStorage.getItem('ec_favs')||'[]');
 let npVal='0';
+let favSelectMode=false;
+let favSelected=new Set();
 
 applyTheme();
 renderFavList();
@@ -823,7 +824,11 @@ function onSearch(q){
     found=rankSearch(FOODS,q);
   }
   if(!found.length){
-    res.innerHTML='<div class="empty-state"><div class="empty-state-emoji">🔍</div><div class="empty-state-title">Nicht lokal gefunden</div><div class="empty-state-sub" style="margin-bottom:14px">Kein Ergebnis für „'+q+'"</div><button onclick="searchOnline(\''+q.replace(/\'/g,"\\'")+'\')" style="background:rgba(124,110,245,0.15);color:var(--accent);border:0.5px solid rgba(124,110,245,0.4);border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;display:block;width:100%;font-family:DM Sans,sans-serif">🌐 Online suchen (Hersteller &amp; Marken)</button></div>';
+    // Show loading briefly, then auto-search online
+    const res2=document.getElementById('search-results');
+    res2.innerHTML='<div class="loading"><div class="loading-spinner"></div>Online suchen nach „'+q+'"…</div>';
+    clearTimeout(_onlineTimer);
+    _onlineTimer=setTimeout(()=>searchOnline(q),600);
     return;
   }
   res.innerHTML='<div class="food-list">'+found.map(f=>`
@@ -965,19 +970,98 @@ function toggleFav(){
 function renderFavList(){
   const el=document.getElementById('fav-list');
   if(!el)return;
+  const bar=document.getElementById('fav-select-bar');
   if(!favorites.length){
-    el.innerHTML='<div class="fav-empty">⭐<br><br>Noch keine Favoriten gespeichert.<br>Öffne ein Lebensmittel und tippe auf ☆</div>';
+    el.innerHTML='<div class="fav-empty">&#11088;<br><br>Noch keine Favoriten gespeichert.<br>Öffne ein Lebensmittel und tippe auf &#9734;</div>';
+    if(bar)bar.style.display='none';
+    favSelectMode=false;favSelected.clear();
     return;
   }
-  el.innerHTML='<div class="food-list">'+favorites.map(f=>`
-    <div class="food-item" style="position:relative" onclick='showFavFood(${JSON.stringify(f.name)})'>
-      <div class="food-item-emoji">${f.emoji}</div>
-      <div class="food-item-info">
-        <div class="food-item-name">${f.name}</div>
-        <div class="food-item-sub">${f.cat} &middot; ${f.kcal} kcal &middot; P ${f.p}g</div>
-      </div>
-      <button onclick='removeFav(${JSON.stringify(f.name)},event)' style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:4px;flex-shrink:0">✕</button>
-    </div>`).join('')+'</div>';
+  let html='<div class="food-list">';
+  favorites.forEach(function(f,i){
+    const sel=favSelected.has(f.name);
+    const emoji=f.emoji||'&#128230;';
+    const borderStyle=sel?'border-color:var(--accent);background:rgba(124,110,245,0.08);':'';
+    // Use data-index to avoid quoting issues with food names
+    let leftEl=favSelectMode
+      ? '<div style="width:22px;height:22px;border-radius:50%;border:2px solid '+(sel?'var(--accent)':'var(--border2)')
+        +';background:'+(sel?'var(--accent)':'transparent')
+        +';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:#fff">'
+        +(sel?'&#10003;':'')+'</div>'
+      : '<div class="food-item-emoji">'+emoji+'</div>';
+    let rightEl=favSelectMode
+      ? ''
+      : '<button data-idx="'+i+'" onclick="removeFavIdx(parseInt(this.dataset.idx),event)" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:4px;flex-shrink:0">&#10005;</button>';
+    html+='<div class="food-item" data-idx="'+i+'" style="position:relative;'+borderStyle+'" onclick="favItemClickIdx(parseInt(this.dataset.idx))">'
+      +leftEl
+      +'<div class="food-item-info">'
+        +'<div class="food-item-name">'+f.name+'</div>'
+        +'<div class="food-item-sub">'+(f.cat||'')+'&middot; '+(f.kcal||0)+' kcal &middot; P '+(f.p||0)+'g</div>'
+      +'</div>'
+      +rightEl
+    +'</div>';
+  });
+  if(favorites.length>1&&!favSelectMode){
+    html+='';
+  }
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function favItemClickIdx(idx){
+  const f=favorites[idx];if(!f)return;
+  if(favSelectMode){
+    if(favSelected.has(f.name))favSelected.delete(f.name);
+    else favSelected.add(f.name);
+    document.getElementById('fav-select-count').textContent=favSelected.size+' ausgewählt';
+    renderFavList();
+  } else {
+    showFavFood(f.name);
+  }
+}
+
+function removeFavIdx(idx,e){
+  e.stopPropagation();
+  const f=favorites[idx];if(!f)return;
+  favorites.splice(idx,1);
+  localStorage.setItem('ec_favs',JSON.stringify(favorites));
+  renderFavList();
+  toast('Entfernt');
+}
+
+function favItemClick(name){
+  if(favSelectMode){
+    if(favSelected.has(name)) favSelected.delete(name);
+    else favSelected.add(name);
+    document.getElementById('fav-select-count').textContent=favSelected.size+' ausgewählt';
+    renderFavList();
+  } else {
+    showFavFood(name);
+  }
+}
+
+function enterFavSelectMode(){
+  favSelectMode=true;favSelected.clear();
+  document.getElementById('fav-select-bar').style.display='flex';
+  document.getElementById('fav-select-count').textContent='0 ausgewählt';
+  renderFavList();
+}
+
+function cancelFavSelect(){
+  favSelectMode=false;favSelected.clear();
+  document.getElementById('fav-select-bar').style.display='none';
+  renderFavList();
+}
+
+function deleteSelectedFavs(){
+  if(!favSelected.size){toast('Nichts ausgewählt');return;}
+  favorites=favorites.filter(f=>!favSelected.has(f.name));
+  localStorage.setItem('ec_favs',JSON.stringify(favorites));
+  const n=favSelected.size;
+  favSelectMode=false;favSelected.clear();
+  document.getElementById('fav-select-bar').style.display='none';
+  renderFavList();
+  toast(n+' Favoriten gelöscht');
 }
 
 function showFavFood(name){
