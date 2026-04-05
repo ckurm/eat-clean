@@ -595,8 +595,285 @@ const FOODS=[
   {name:'Kichererbsenmehl',cat:'Getreide',emoji:'🫘',kcal:387,p:22,c:58,f:6,fi:11,sugar:10,quality:['highProtein','highFiber'],fe:6.2,mg:166,k:846,zn:2.8,ca:45},
   {name:'Mohn',cat:'Nüsse',emoji:'🌿',kcal:573,p:18,c:28,f:46,fi:20,sugar:3,quality:['highFiber','healthyFat'],vitC:1,vitE:1.8,fe:9.8,mg:347,k:719,zn:7.9,ca:1438},
   {name:'Flohsamen (ganz)',cat:'Superfoods',emoji:'🌿',kcal:200,p:2,c:80,f:1,fi:71,sugar:0,quality:['highFiber'],fe:10,mg:120,k:160,ca:36},
+  // Zitrusfrüchte & Exoten
+  {name:'Zitrone',cat:'Obst',emoji:'🍋',kcal:29,p:1,c:9,f:0,fi:3,sugar:2,quality:['lowCalorie','vitamin'],vitC:53,vitA:1,fe:0.6,mg:8,k:138,ca:26},
+  {name:'Limette',cat:'Obst',emoji:'🍋',kcal:30,p:1,c:11,f:0,fi:3,sugar:2,quality:['lowCalorie','vitamin'],vitC:29,fe:0.6,mg:6,k:102,ca:33},
+  {name:'Grapefruit',cat:'Obst',emoji:'🍊',kcal:42,p:1,c:11,f:0,fi:2,sugar:7,quality:['lowCalorie','vitamin'],vitC:34,vitA:46,mg:9,k:135,ca:22},
+  {name:'Clementine',cat:'Obst',emoji:'🍊',kcal:47,p:1,c:12,f:0,fi:2,sugar:9,quality:['lowCalorie','vitamin'],vitC:49,mg:10,k:177,ca:30},
+  {name:'Drachenfrucht',cat:'Obst',emoji:'🫐',kcal:60,p:1,c:13,f:0,fi:3,sugar:8,quality:['lowCalorie','highFiber'],vitC:3,fe:0.7,mg:18,k:272,ca:7},
+  {name:'Guave',cat:'Obst',emoji:'🍈',kcal:68,p:3,c:14,f:1,fi:5,sugar:9,quality:['vitamin','highFiber'],vitC:228,vitA:31,fe:0.3,mg:22,k:417,ca:18},
+  {name:'Kumquat',cat:'Obst',emoji:'🍊',kcal:71,p:2,c:16,f:1,fi:7,sugar:10,quality:['highFiber','vitamin'],vitC:44,ca:62,mg:20,k:186},
+  // Gemüse (weitere)
+  {name:'Zuckerschoten',cat:'Gemüse',emoji:'🫘',kcal:42,p:3,c:8,f:0,fi:3,sugar:4,quality:['lowCalorie'],vitC:60,vitA:10,fe:2.1,mg:21,k:200,ca:43},
+  {name:'Zuckererbsen',cat:'Gemüse',emoji:'🫘',kcal:42,p:3,c:8,f:0,fi:3,sugar:4,quality:['lowCalorie'],vitC:60,fe:2.1,mg:21,k:200,ca:43},
+  {name:'Stangensellerie',cat:'Gemüse',emoji:'🥬',kcal:14,p:1,c:3,f:0,fi:2,sugar:2,quality:['lowCalorie','lowCarb'],vitC:3,vitK:30,mg:11,k:260,ca:40},
+  {name:'Schwarzwurzel',cat:'Gemüse',emoji:'🥦',kcal:73,p:2,c:17,f:0,fi:4,sugar:4,quality:['highFiber'],vitC:8,fe:3.3,mg:23,k:380,ca:61},
+  {name:'Pastinake',cat:'Gemüse',emoji:'🥕',kcal:75,p:2,c:18,f:0,fi:5,sugar:5,quality:['highFiber'],vitC:17,fe:0.6,mg:29,k:375,ca:36},
+  {name:'Petersilienwurzel',cat:'Gemüse',emoji:'🥕',kcal:55,p:2,c:12,f:0,fi:4,sugar:3,quality:['highFiber'],vitC:41,fe:1.2,mg:29,k:580,ca:45},
+  {name:'Topinambur',cat:'Gemüse',emoji:'🥔',kcal:73,p:2,c:17,f:0,fi:2,sugar:10,quality:[],vitC:4,fe:3.4,mg:17,k:429,ca:14},
+  {name:'Mairübe',cat:'Gemüse',emoji:'🫒',kcal:28,p:1,c:6,f:0,fi:2,sugar:4,quality:['lowCalorie'],vitC:21,fe:0.4,mg:11,k:230,ca:44},
+  {name:'Mangold',cat:'Gemüse',emoji:'🥬',kcal:19,p:2,c:4,f:0,fi:2,sugar:1,quality:['lowCalorie','vitamin'],vitC:30,vitA:306,vitK:830,fe:1.8,mg:81,k:549,ca:51},
+  {name:'Portulak',cat:'Gemüse',emoji:'🥬',kcal:20,p:2,c:4,f:0,fi:1,sugar:1,quality:['lowCalorie'],vitC:21,vitA:66,fe:2.0,mg:68,k:494,ca:65},
+  {name:'Brennnessel',cat:'Gemüse',emoji:'🌿',kcal:36,p:3,c:7,f:0,fi:2,sugar:0,quality:['vitamin'],vitC:333,vitA:101,vitK:499,fe:1.6,mg:57,k:334,ca:481},
+  {name:'Blattsalat (gemischt)',cat:'Gemüse',emoji:'🥬',kcal:15,p:1,c:3,f:0,fi:2,sugar:1,quality:['lowCalorie'],vitC:10,vitA:150,vitK:80,fe:0.5,mg:10,k:180,ca:30},
+  {name:'Rucola',cat:'Gemüse',emoji:'🥬',kcal:25,p:3,c:4,f:0,fi:2,sugar:2,quality:['lowCalorie','vitamin'],vitC:15,vitA:119,vitK:109,fe:1.5,mg:47,k:369,ca:160},
+  {name:'Endiviensalat',cat:'Gemüse',emoji:'🥬',kcal:17,p:1,c:3,f:0,fi:3,sugar:0,quality:['lowCalorie','highFiber'],vitC:9,vitA:108,vitK:231,fe:0.8,mg:15,k:314,ca:52},
+  {name:'Radicchio',cat:'Gemüse',emoji:'🥬',kcal:23,p:1,c:5,f:0,fi:2,sugar:1,quality:['lowCalorie'],vitC:8,vitA:1,vitK:255,fe:0.6,mg:13,k:303,ca:36},
+  {name:'Feldsalat',cat:'Gemüse',emoji:'🥬',kcal:18,p:2,c:3,f:0,fi:2,sugar:0,quality:['lowCalorie','vitamin'],vitC:38,vitA:225,vitK:121,fe:2.2,mg:13,k:459,ca:38},
+  {name:'Rote Paprika',cat:'Gemüse',emoji:'🫑',kcal:31,p:1,c:6,f:0,fi:2,sugar:5,quality:['lowCalorie','vitamin'],vitC:190,vitA:157,fe:0.4,mg:12,k:211,ca:7},
+  {name:'Gelbe Paprika',cat:'Gemüse',emoji:'🫑',kcal:27,p:1,c:6,f:0,fi:1,sugar:4,quality:['lowCalorie','vitamin'],vitC:183,vitA:10,fe:0.4,mg:12,k:212,ca:11},
+  {name:'Grüne Paprika',cat:'Gemüse',emoji:'🫑',kcal:20,p:1,c:5,f:0,fi:2,sugar:3,quality:['lowCalorie','vitamin'],vitC:80,fe:0.4,mg:10,k:175,ca:10},
+  {name:'Spitzpaprika',cat:'Gemüse',emoji:'🫑',kcal:28,p:1,c:6,f:0,fi:2,sugar:5,quality:['lowCalorie','vitamin'],vitC:130,fe:0.4,mg:11,k:200,ca:9},
+  {name:'Chili (frisch)',cat:'Gemüse',emoji:'🌶',kcal:40,p:2,c:9,f:0,fi:2,sugar:5,quality:['vitamin'],vitC:144,vitA:48,fe:1.0,mg:23,k:322,ca:14},
+  {name:'Knoblauch',cat:'Gemüse',emoji:'🧄',kcal:149,p:6,c:33,f:1,fi:2,sugar:1,quality:['antioxidant'],vitC:31,vitB12:0,fe:1.7,mg:25,k:401,ca:181},
+  {name:'Zwiebel',cat:'Gemüse',emoji:'🧅',kcal:40,p:1,c:9,f:0,fi:2,sugar:4,quality:['lowCalorie'],vitC:7,fe:0.2,mg:10,k:146,ca:23},
+  {name:'Frühlingszwiebeln',cat:'Gemüse',emoji:'🌿',kcal:32,p:2,c:7,f:0,fi:3,sugar:2,quality:['lowCalorie'],vitC:19,vitA:50,vitK:207,fe:1.5,mg:20,k:276,ca:72},
+  {name:'Schalotten',cat:'Gemüse',emoji:'🧅',kcal:72,p:3,c:17,f:0,fi:3,sugar:8,quality:[],vitC:8,fe:1.2,mg:21,k:334,ca:37},
+  {name:'Meerrettich',cat:'Gemüse',emoji:'🌿',kcal:59,p:3,c:14,f:0,fi:3,sugar:8,quality:['antioxidant'],vitC:114,fe:0.4,mg:27,k:246,ca:56},
+  {name:'Radieschen',cat:'Gemüse',emoji:'🫒',kcal:16,p:1,c:3,f:0,fi:2,sugar:2,quality:['lowCalorie'],vitC:25,fe:0.3,mg:10,k:233,ca:25},
+  {name:'Rettich',cat:'Gemüse',emoji:'🫒',kcal:16,p:1,c:4,f:0,fi:2,sugar:2,quality:['lowCalorie'],vitC:22,fe:0.3,mg:11,k:240,ca:27},
+  {name:'Kürbis (Butternut)',cat:'Gemüse',emoji:'🎃',kcal:45,p:1,c:12,f:0,fi:2,sugar:2,quality:['lowCalorie'],vitC:21,vitA:532,fe:0.7,mg:34,k:352,ca:48},
+  {name:'Süßmais (Kolben)',cat:'Gemüse',emoji:'🌽',kcal:86,p:3,c:19,f:1,fi:2,sugar:3,quality:['lowFat'],vitC:7,mg:37,k:270,ca:2},
+  {name:'Bohnenkraut',cat:'Gemüse',emoji:'🌿',kcal:272,p:7,c:68,f:1,fi:16,sugar:0,quality:['antioxidant'],vitC:50,vitA:525,fe:37,mg:377,k:1051,ca:2132},
+  {name:'Petersilie',cat:'Gemüse',emoji:'🌿',kcal:36,p:3,c:6,f:1,fi:3,sugar:1,quality:['vitamin'],vitC:133,vitA:421,vitK:1640,fe:6.2,mg:50,k:554,ca:138},
+  {name:'Basilikum',cat:'Gemüse',emoji:'🌿',kcal:22,p:3,c:3,f:1,fi:2,sugar:0,quality:['antioxidant','vitamin'],vitC:18,vitA:264,vitK:415,fe:3.2,mg:64,k:295,ca:177},
+  {name:'Schnittlauch',cat:'Gemüse',emoji:'🌿',kcal:30,p:3,c:4,f:1,fi:3,sugar:2,quality:['vitamin'],vitC:58,vitA:218,vitK:213,fe:1.6,mg:42,k:296,ca:92},
+  {name:'Minze',cat:'Gemüse',emoji:'🌿',kcal:70,p:4,c:15,f:1,fi:8,sugar:0,quality:['antioxidant'],vitC:31,vitA:212,fe:5.1,mg:80,k:569,ca:243},
+  {name:'Koriander',cat:'Gemüse',emoji:'🌿',kcal:23,p:2,c:4,f:0,fi:3,sugar:0,quality:['vitamin'],vitC:27,vitA:337,vitK:310,fe:1.8,mg:26,k:521,ca:67},
+  {name:'Dill',cat:'Gemüse',emoji:'🌿',kcal:43,p:4,c:7,f:1,fi:2,sugar:0,quality:['vitamin'],vitC:85,vitA:386,fe:6.6,mg:55,k:738,ca:208},
+  {name:'Thymian',cat:'Gemüse',emoji:'🌿',kcal:101,p:6,c:24,f:2,fi:14,sugar:0,quality:['antioxidant'],vitC:160,vitA:238,fe:17,mg:160,k:609,ca:405},
+  {name:'Rosmarin',cat:'Gemüse',emoji:'🌿',kcal:131,p:3,c:21,f:6,fi:14,sugar:0,quality:['antioxidant'],vitC:22,vitA:146,fe:7.7,mg:91,k:668,ca:317},
+  // Getreide & Brot (weitere)
+  {name:'Bagel',cat:'Getreide',emoji:'🥯',kcal:270,p:10,c:53,f:2,fi:2,sugar:5,quality:[],fe:3.0,mg:22,k:100,ca:53},
+  {name:'Croissant',cat:'Getreide',emoji:'🥐',kcal:406,p:9,c:46,f:21,fi:2,sugar:10,quality:[],fe:2.0,mg:15,k:120,ca:30},
+  {name:'Pita-Brot',cat:'Getreide',emoji:'🫓',kcal:275,p:9,c:56,f:1,fi:2,sugar:1,quality:['lowFat'],fe:2.5,mg:20,k:103,ca:86},
+  {name:'Tortilla (Weizen)',cat:'Getreide',emoji:'🫓',kcal:306,p:8,c:52,f:8,fi:3,sugar:3,quality:[],fe:2.5,mg:18,k:130,ca:90},
+  {name:'Reiskuchen',cat:'Getreide',emoji:'🫓',kcal:387,p:8,c:82,f:3,fi:3,sugar:1,quality:[],mg:45,k:100,ca:5},
+  {name:'Haferkekse',cat:'Getreide',emoji:'🍪',kcal:447,p:7,c:67,f:17,fi:4,sugar:28,quality:['highSugar'],fe:2.5,mg:50,k:200,ca:35},
+  {name:'Weizenkeime',cat:'Getreide',emoji:'🌾',kcal:360,p:29,c:52,f:10,fi:14,sugar:0,quality:['highProtein','highFiber'],vitE:15,fe:8.5,mg:239,k:892,zn:12,ca:45},
+  {name:'Hirsemehl',cat:'Getreide',emoji:'🌾',kcal:353,p:10,c:73,f:4,fi:4,sugar:0,quality:['complex'],fe:3.0,mg:114,k:195,ca:14},
+  // Fleisch & Wurst
+  {name:'Putenbrust',cat:'Fleisch',emoji:'🍗',kcal:109,p:24,c:0,f:1,fi:0,sugar:0,quality:['highProtein','lowFat'],vitB12:0.2,fe:1.0,mg:28,k:340,zn:1.5},
+  {name:'Pute (Hackfleisch)',cat:'Fleisch',emoji:'🍗',kcal:130,p:21,c:0,f:5,fi:0,sugar:0,quality:['highProtein','lowFat'],fe:1.2,mg:24,k:280,zn:2.0},
+  {name:'Ente (Brust)',cat:'Fleisch',emoji:'🦆',kcal:135,p:23,c:0,f:4,fi:0,sugar:0,quality:['highProtein'],vitB12:0.3,fe:2.7,mg:20,k:285,zn:1.7},
+  {name:'Lammkeule',cat:'Fleisch',emoji:'🍖',kcal:191,p:18,c:0,f:13,fi:0,sugar:0,quality:['highProtein'],vitB12:2.2,fe:2.3,mg:19,k:300,zn:4.2},
+  {name:'Kalbsschnitzel',cat:'Fleisch',emoji:'🍖',kcal:109,p:22,c:0,f:2,fi:0,sugar:0,quality:['highProtein','lowFat'],vitB12:1.5,fe:0.8,mg:24,k:360,zn:3.5},
+  {name:'Wildschwein',cat:'Fleisch',emoji:'🐗',kcal:122,p:22,c:0,f:4,fi:0,sugar:0,quality:['highProtein'],vitB12:1.0,fe:2.5,mg:25,k:320,zn:2.8},
+  {name:'Salami',cat:'Fleisch',emoji:'🍖',kcal:425,p:22,c:2,f:38,fi:0,sugar:1,quality:[],fe:1.5,mg:16,k:330,zn:2.2},
+  {name:'Schinken (gekocht)',cat:'Fleisch',emoji:'🥩',kcal:107,p:19,c:1,f:3,fi:0,sugar:1,quality:['highProtein','lowFat'],fe:0.8,mg:16,k:310,zn:1.8},
+  {name:'Schinken (roh)',cat:'Fleisch',emoji:'🥩',kcal:247,p:25,c:0,f:17,fi:0,sugar:0,quality:['highProtein'],fe:0.6,mg:18,k:400,zn:2.5},
+  {name:'Bratwurst',cat:'Fleisch',emoji:'🌭',kcal:280,p:14,c:1,f:25,fi:0,sugar:0,quality:[],fe:0.9,mg:14,k:190,zn:1.5},
+  // Fisch (weitere)
+  {name:'Seelachs',cat:'Fisch',emoji:'🐟',kcal:70,p:16,c:0,f:0,fi:0,sugar:0,quality:['highProtein','lowFat','lowCalorie'],vitD:3,vitB12:1.5,fe:0.3,mg:28,k:390,zn:0.5},
+  {name:'Tilapia',cat:'Fisch',emoji:'🐟',kcal:96,p:20,c:0,f:2,fi:0,sugar:0,quality:['highProtein','lowFat'],vitB12:1.6,fe:0.6,mg:27,k:302,zn:0.4},
+  {name:'Heilbutt',cat:'Fisch',emoji:'🐟',kcal:111,p:21,c:0,f:3,fi:0,sugar:0,quality:['highProtein'],vitD:27,vitB12:1.2,fe:0.2,mg:28,k:490,zn:0.4},
+  {name:'Rotbarsch',cat:'Fisch',emoji:'🐟',kcal:84,p:18,c:0,f:1,fi:0,sugar:0,quality:['highProtein','lowFat'],vitD:2,vitB12:2.5,fe:0.4,mg:30,k:360,zn:0.5},
+  {name:'Dorsch (Kabeljau)',cat:'Fisch',emoji:'🐟',kcal:82,p:18,c:0,f:1,fi:0,sugar:0,quality:['highProtein','lowFat','lowCalorie'],vitD:2,vitB12:1.0,fe:0.5,mg:28,k:400,zn:0.5},
+  {name:'Scholle',cat:'Fisch',emoji:'🐟',kcal:91,p:17,c:0,f:2,fi:0,sugar:0,quality:['highProtein','lowFat'],vitD:5,vitB12:1.1,fe:0.4,mg:23,k:330,zn:0.5},
+  {name:'Matjes',cat:'Fisch',emoji:'🐟',kcal:232,p:19,c:0,f:17,fi:0,sugar:0,quality:['highProtein','omega3'],vitD:14,vitB12:11,fe:0.9,mg:30,k:310,zn:0.8},
+  {name:'Räucherlachs',cat:'Fisch',emoji:'🐟',kcal:142,p:22,c:0,f:6,fi:0,sugar:0,quality:['highProtein','omega3'],vitD:9,vitB12:3.5,fe:0.9,mg:27,k:370,zn:0.5},
+  {name:'Tintenfisch',cat:'Fisch',emoji:'🦑',kcal:92,p:16,c:3,f:1,fi:0,sugar:0,quality:['highProtein','lowFat'],vitB12:1.3,fe:0.7,mg:33,k:246,zn:1.5},
+  {name:'Miesmuscheln',cat:'Fisch',emoji:'🐚',kcal:86,p:12,c:4,f:2,fi:0,sugar:0,quality:['highProtein','lowFat'],vitB12:12,vitD:0.3,fe:3.9,mg:37,k:320,zn:2.7},
+  {name:'Austern',cat:'Fisch',emoji:'🦪',kcal:68,p:9,c:4,f:2,fi:0,sugar:1,quality:['highProtein'],vitB12:8.7,vitD:0.4,fe:5.6,mg:47,k:156,zn:90},
+  // Milch & Käse (weitere)
+  {name:'Ziegenkäse',cat:'Milch & Eier',emoji:'🧀',kcal:364,p:22,c:1,f:31,fi:0,sugar:0,quality:['highProtein'],vitA:400,vitB12:0.2,ca:298,mg:19,k:73,zn:0.9},
+  {name:'Ricotta',cat:'Milch & Eier',emoji:'🧀',kcal:174,p:11,c:3,f:13,fi:0,sugar:0,quality:['highProtein'],vitA:117,vitB12:0.2,ca:207,mg:11,k:105,zn:1.2},
+  {name:'Mascarpone',cat:'Milch & Eier',emoji:'🧀',kcal:429,p:4,c:4,f:45,fi:0,sugar:3,quality:[],vitA:417,ca:75,mg:7,k:100},
+  {name:'Quark (Vollfett)',cat:'Milch & Eier',emoji:'🥛',kcal:132,p:11,c:4,f:8,fi:0,sugar:4,quality:['highProtein'],vitB12:0.4,ca:90,mg:12,k:155},
+  {name:'Sahne',cat:'Milch & Eier',emoji:'🥛',kcal:337,p:2,c:3,f:36,fi:0,sugar:3,quality:[],vitA:300,vitD:0.3,ca:65,mg:7,k:74},
+  {name:'Saure Sahne',cat:'Milch & Eier',emoji:'🥛',kcal:195,p:3,c:4,f:20,fi:0,sugar:4,quality:[],vitA:180,ca:70,mg:8,k:90},
+  {name:'Crème fraîche',cat:'Milch & Eier',emoji:'🥛',kcal:292,p:2,c:3,f:30,fi:0,sugar:2,quality:[],vitA:240,ca:70,mg:7,k:88},
+  // Hülsenfrüchte (weitere)
+  {name:'Rote Linsen (trocken)',cat:'Hülsenfrüchte',emoji:'🫘',kcal:352,p:26,c:60,f:1,fi:11,sugar:2,quality:['highProtein','highFiber'],fe:7.4,mg:122,k:955,zn:3.4,ca:51},
+  {name:'Belugalinsen (gekocht)',cat:'Hülsenfrüchte',emoji:'🫘',kcal:116,p:9,c:20,f:0,fi:8,sugar:1,quality:['highProtein','highFiber'],fe:3.3,mg:36,k:369,zn:1.3,ca:19},
+  {name:'Bohnen (weiß, gek.)',cat:'Hülsenfrüchte',emoji:'🫘',kcal:139,p:10,c:25,f:1,fi:7,sugar:0,quality:['highProtein','highFiber'],fe:3.7,mg:66,k:453,zn:1.0,ca:90},
+  // Getränke & Süßes
+  {name:'Grüner Tee',cat:'Getränke',emoji:'🍵',kcal:1,p:0,c:0,f:0,fi:0,sugar:0,quality:['antioxidant','lowCalorie'],vitC:0,mg:1,k:8,ca:0},
+  {name:'Kaffee (schwarz)',cat:'Getränke',emoji:'☕',kcal:2,p:0,c:0,f:0,fi:0,sugar:0,quality:['lowCalorie'],mg:7,k:65,ca:2},
+  {name:'Schwarzer Tee',cat:'Getränke',emoji:'🍵',kcal:1,p:0,c:0,f:0,fi:0,sugar:0,quality:['antioxidant','lowCalorie'],mg:1,k:37,ca:0},
+  {name:'Kamillentee',cat:'Getränke',emoji:'🍵',kcal:1,p:0,c:0,f:0,fi:0,sugar:0,quality:['lowCalorie'],mg:1,k:8,ca:2},
+  {name:'Apfelsaft (pur)',cat:'Getränke',emoji:'🍎',kcal:47,p:0,c:11,f:0,fi:0,sugar:10,quality:['highSugar'],vitC:1,mg:4,k:119,ca:7},
+  {name:'Traubensaft',cat:'Getränke',emoji:'🍇',kcal:60,p:0,c:15,f:0,fi:0,sugar:15,quality:['highSugar'],vitC:0,mg:7,k:104,ca:11},
+  {name:'Multivitaminsaft',cat:'Getränke',emoji:'🧃',kcal:44,p:0,c:10,f:0,fi:0,sugar:9,quality:['highSugar','vitamin'],vitC:30,mg:5,k:130},
+  {name:'Rote-Bete-Saft',cat:'Getränke',emoji:'🫐',kcal:40,p:1,c:9,f:0,fi:0,sugar:7,quality:['antioxidant'],vitC:5,fe:0.5,mg:15,k:300,ca:12},
+  {name:'Mineralwasser',cat:'Getränke',emoji:'💧',kcal:0,p:0,c:0,f:0,fi:0,sugar:0,quality:['lowCalorie'],ca:150,mg:50,k:5},
+  {name:'Latte Macchiato',cat:'Getränke',emoji:'☕',kcal:75,p:4,c:8,f:3,fi:0,sugar:8,quality:[],vitB12:0.3,ca:150,mg:12,k:180},
+  {name:'Cappuccino',cat:'Getränke',emoji:'☕',kcal:55,p:4,c:5,f:2,fi:0,sugar:5,quality:[],ca:125,mg:10,k:150},
+  {name:'Sprite / Limonade',cat:'Getränke',emoji:'🥤',kcal:41,p:0,c:10,f:0,fi:0,sugar:10,quality:['highSugar']},
+  {name:'Redbull (250ml)',cat:'Getränke',emoji:'🥤',kcal:45,p:0,c:11,f:0,fi:0,sugar:11,quality:['highSugar'],vitB12:0},
+  // Convenience & Fertiggerichte
+  {name:'Tomatensoße (Glas)',cat:'Sonstiges',emoji:'🍅',kcal:70,p:2,c:11,f:2,fi:2,sugar:7,quality:[],vitC:10,fe:0.8,mg:18,k:310,ca:25},
+  {name:'Ketchup',cat:'Sonstiges',emoji:'🍅',kcal:112,p:1,c:28,f:0,fi:1,sugar:22,quality:['highSugar'],vitC:6,k:280,ca:14},
+  {name:'Senf',cat:'Sonstiges',emoji:'🫙',kcal:66,p:4,c:8,f:3,fi:2,sugar:4,quality:['lowCalorie'],vitC:3,fe:1.5,mg:48,k:152,ca:57},
+  {name:'Mayonnaise',cat:'Sonstiges',emoji:'🫙',kcal:680,p:1,c:3,f:75,fi:0,sugar:2,quality:[],vitA:70,vitE:6.5},
+  {name:'Sojasoße',cat:'Sonstiges',emoji:'🫙',kcal:60,p:6,c:9,f:0,fi:0,sugar:2,quality:[],fe:1.5,mg:30,k:212,ca:17},
+  {name:'Balsamicoessig',cat:'Sonstiges',emoji:'🫙',kcal:88,p:0,c:17,f:0,fi:0,sugar:15,quality:['highSugar'],mg:6,k:112,ca:27},
+  {name:'Olivenpaste',cat:'Sonstiges',emoji:'🫒',kcal:115,p:1,c:6,f:10,fi:2,sugar:0,quality:['healthyFat'],fe:3.3,mg:22,k:8,ca:96},
+  {name:'Avocadocreme',cat:'Sonstiges',emoji:'🥑',kcal:157,p:2,c:9,f:14,fi:7,sugar:1,quality:['healthyFat','highFiber']},
+  {name:'Erdnusscreme',cat:'Sonstiges',emoji:'🥜',kcal:588,p:25,c:20,f:50,fi:6,sugar:5,quality:['highProtein'],vitE:9,fe:1.9,mg:154,k:649,zn:2.9},
+  {name:'Mandelcreme',cat:'Sonstiges',emoji:'🌰',kcal:614,p:21,c:20,f:53,fi:10,sugar:4,quality:['healthyFat','highProtein'],vitE:25,fe:3.7,mg:268,k:705,zn:3.1,ca:264},
+  {name:'Tahini (Sesam)',cat:'Sonstiges',emoji:'🌿',kcal:595,p:17,c:21,f:53,fi:9,sugar:0,quality:['healthyFat'],fe:8.9,mg:95,k:414,zn:4.6,ca:426},
+  {name:'Vanilleeis',cat:'Sonstiges',emoji:'🍦',kcal:207,p:4,c:24,f:11,fi:0,sugar:21,quality:['highSugar'],vitA:100,vitD:0.2,ca:128,mg:14,k:188},
+  {name:'Joghurt (Frucht)',cat:'Sonstiges',emoji:'🥛',kcal:90,p:4,c:15,f:2,fi:0,sugar:14,quality:['highSugar'],vitB12:0.4,ca:120,mg:12,k:180},
+  {name:'Protein-Müsli',cat:'Sonstiges',emoji:'🥣',kcal:380,p:22,c:48,f:8,fi:7,sugar:10,quality:['highProtein','highFiber'],fe:5.0,mg:110,k:450,ca:200,zn:3.0},
+  // Nüsse & Samen (weitere)
+  {name:'Pistazien',cat:'Nüsse',emoji:'🌰',kcal:562,p:20,c:28,f:45,fi:10,sugar:8,quality:['highProtein','highFiber'],vitE:2.3,fe:3.9,mg:121,k:1025,zn:2.2,ca:105},
+  {name:'Pecannüsse',cat:'Nüsse',emoji:'🌰',kcal:691,p:9,c:14,f:72,fi:10,sugar:4,quality:['healthyFat','highFiber'],vitE:1.4,fe:2.5,mg:121,k:410,zn:4.5,ca:70},
+  {name:'Kokosflocken',cat:'Nüsse',emoji:'🥥',kcal:660,p:7,c:23,f:65,fi:15,sugar:8,quality:['healthyFat','highFiber'],fe:3.3,mg:105,k:543,zn:2.0,ca:26},
+  {name:'Sesamkörner',cat:'Nüsse',emoji:'🌿',kcal:573,p:18,c:23,f:50,fi:12,sugar:0,quality:['healthyFat','highFiber'],vitE:0.2,fe:10,mg:351,k:468,zn:7.8,ca:975},
+  {name:'Mohnsamen',cat:'Nüsse',emoji:'🌿',kcal:573,p:18,c:28,f:46,fi:20,sugar:3,quality:['highFiber'],fe:9.8,mg:347,k:719,zn:7.9,ca:1438},
   {name:'Coca-Cola',cat:'Sonstiges',emoji:'🥤',kcal:42,p:0,c:11,f:0,fi:0,sugar:11,quality:['highSugar']},
   {name:'Orangensaft',cat:'Sonstiges',emoji:'🍊',kcal:45,p:1,c:10,f:0,fi:0,sugar:9,quality:['highSugar'],vitC:50,k:200,ca:10},
+  // Zitrusfrüchte & Exoten
+  {name:'Zitrone',cat:'Obst',emoji:'🍋',kcal:29,p:1,c:9,f:0,fi:3,sugar:2,quality:['lowCalorie','vitamin'],vitC:53,fe:0.6,mg:8,k:138,ca:26},
+  {name:'Limette',cat:'Obst',emoji:'🍋',kcal:30,p:1,c:11,f:0,fi:3,sugar:2,quality:['lowCalorie','vitamin'],vitC:29,mg:6,k:102,ca:33},
+  {name:'Grapefruit',cat:'Obst',emoji:'🍊',kcal:42,p:1,c:11,f:0,fi:2,sugar:7,quality:['lowCalorie','vitamin'],vitC:31,vitA:46,mg:9,k:135,ca:22},
+  {name:'Clementine',cat:'Obst',emoji:'🍊',kcal:47,p:1,c:12,f:0,fi:2,sugar:9,quality:['lowCalorie','vitamin'],vitC:49,mg:10,k:177,ca:30},
+  // Gemüse (fehlende)
+  {name:'Zuckerschoten',cat:'Gemüse',emoji:'🫘',kcal:42,p:3,c:8,f:0,fi:3,sugar:4,quality:['lowCalorie','highFiber'],vitC:60,vitA:54,vitK:25,fe:2,mg:21,k:200,ca:43},
+  {name:'Zuckermais',cat:'Gemüse',emoji:'🌽',kcal:86,p:3,c:19,f:1,fi:2,sugar:3,quality:['lowFat'],vitC:7,mg:37,k:270,ca:2},
+  {name:'Rucola (Rauke)',cat:'Gemüse',emoji:'🥬',kcal:25,p:3,c:4,f:0,fi:2,sugar:2,quality:['lowCalorie','vitamin'],vitC:15,vitA:119,vitK:109,fe:1.5,mg:47,k:369,ca:160},
+  {name:'Eisbergsalat',cat:'Gemüse',emoji:'🥬',kcal:14,p:1,c:2,f:0,fi:1,sugar:2,quality:['lowCalorie'],vitC:4,vitA:25,vitK:24,mg:7,k:141,ca:18},
+  {name:'Romana-Salat',cat:'Gemüse',emoji:'🥬',kcal:17,p:1,c:3,f:0,fi:2,sugar:1,quality:['lowCalorie','vitamin'],vitC:4,vitA:436,vitK:103,fe:0.9,mg:14,k:247,ca:33},
+  {name:'Feldsalat',cat:'Gemüse',emoji:'🥬',kcal:19,p:2,c:4,f:0,fi:2,sugar:1,quality:['lowCalorie','vitamin'],vitC:38,vitA:144,vitK:270,fe:2.2,mg:13,k:459,ca:38},
+  {name:'Radieschen',cat:'Gemüse',emoji:'🔴',kcal:16,p:1,c:3,f:0,fi:2,sugar:2,quality:['lowCalorie'],vitC:15,mg:10,k:233,ca:25},
+  {name:'Rote Paprika',cat:'Gemüse',emoji:'🫑',kcal:31,p:1,c:6,f:0,fi:2,sugar:5,quality:['lowCalorie','vitamin'],vitC:190,vitA:157,vitE:1.6,fe:0.4,mg:12,k:211,ca:7},
+  {name:'Gelbe Paprika',cat:'Gemüse',emoji:'🫑',kcal:27,p:1,c:6,f:0,fi:1,sugar:5,quality:['lowCalorie','vitamin'],vitC:183,vitA:18,mg:12,k:212,ca:11},
+  {name:'Grüne Paprika',cat:'Gemüse',emoji:'🫑',kcal:20,p:1,c:5,f:0,fi:2,sugar:3,quality:['lowCalorie','vitamin'],vitC:80,vitA:18,mg:10,k:175,ca:10},
+  {name:'Knoblauch',cat:'Gemüse',emoji:'🧄',kcal:149,p:6,c:33,f:1,fi:2,sugar:1,quality:[],vitC:31,vitB6:1.2,fe:1.7,mg:25,k:401,ca:181},
+  {name:'Zwiebel',cat:'Gemüse',emoji:'🧅',kcal:40,p:1,c:9,f:0,fi:2,sugar:4,quality:['lowCalorie'],vitC:7,vitB6:0.1,fe:0.2,mg:10,k:146,ca:23},
+  {name:'Frühlingszwiebeln',cat:'Gemüse',emoji:'🌿',kcal:32,p:2,c:7,f:0,fi:3,sugar:2,quality:['lowCalorie'],vitC:18,vitA:50,vitK:207,fe:1.5,mg:20,k:276,ca:72},
+  {name:'Rote Zwiebel',cat:'Gemüse',emoji:'🧅',kcal:40,p:1,c:9,f:0,fi:2,sugar:5,quality:['lowCalorie'],vitC:7,fe:0.2,mg:10,k:146,ca:23},
+  {name:'Chicorée',cat:'Gemüse',emoji:'🥬',kcal:17,p:1,c:4,f:0,fi:2,sugar:2,quality:['lowCalorie'],vitC:4,vitA:3,vitK:42,fe:0.2,mg:9,k:182,ca:19},
+  {name:'Endivie',cat:'Gemüse',emoji:'🥬',kcal:17,p:1,c:3,f:0,fi:3,sugar:0,quality:['lowCalorie','highFiber'],vitC:7,vitA:108,vitK:231,fe:0.8,mg:15,k:314,ca:52},
+  {name:'Mangold',cat:'Gemüse',emoji:'🥬',kcal:19,p:2,c:4,f:0,fi:2,sugar:1,quality:['lowCalorie','vitamin'],vitC:30,vitA:306,vitK:830,fe:1.8,mg:81,k:379,ca:51},
+  {name:'Rhabarber',cat:'Gemüse',emoji:'🌿',kcal:21,p:1,c:5,f:0,fi:2,sugar:1,quality:['lowCalorie'],vitC:8,vitK:29,fe:0.2,mg:12,k:288,ca:86},
+  {name:'Okra',cat:'Gemüse',emoji:'🌿',kcal:33,p:2,c:7,f:0,fi:3,sugar:2,quality:['lowCalorie','highFiber'],vitC:23,vitA:36,vitK:31,fe:0.6,mg:57,k:299,ca:82},
+  {name:'Steckrübe',cat:'Gemüse',emoji:'🥔',kcal:37,p:1,c:9,f:0,fi:2,sugar:6,quality:['lowCalorie'],vitC:25,mg:20,k:305,ca:47},
+  {name:'Topinambur',cat:'Gemüse',emoji:'🥔',kcal:73,p:2,c:17,f:0,fi:2,sugar:10,quality:[],vitC:4,fe:3.4,mg:17,k:429,ca:14},
+  {name:'Artischockenherzen',cat:'Gemüse',emoji:'🌿',kcal:40,p:3,c:9,f:0,fi:5,sugar:1,quality:['lowCalorie','highFiber'],vitC:12,fe:1.3,mg:60,k:370,ca:44},
+  {name:'Schwarzwurzel',cat:'Gemüse',emoji:'🌿',kcal:82,p:3,c:18,f:0,fi:3,sugar:7,quality:[],vitC:14,fe:3.3,mg:23,k:380,ca:78},
+  {name:'Pastinake',cat:'Gemüse',emoji:'🥕',kcal:75,p:2,c:18,f:0,fi:5,sugar:5,quality:['highFiber'],vitC:17,fe:0.6,mg:29,k:375,ca:36},
+  {name:'Meerrettich',cat:'Gemüse',emoji:'🌿',kcal:59,p:4,c:11,f:1,fi:3,sugar:8,quality:[],vitC:114,fe:0.4,mg:27,k:246,ca:56},
+  // Fleisch & Wurst
+  {name:'Putenbrust',cat:'Fleisch',emoji:'🍗',kcal:119,p:24,c:0,f:2,fi:0,sugar:0,quality:['highProtein','lowFat'],vitB12:0.3,fe:0.5,mg:28,k:350,zn:1.7},
+  {name:'Lammkeule',cat:'Fleisch',emoji:'🍖',kcal:191,p:20,c:0,f:13,fi:0,sugar:0,quality:['highProtein'],vitB12:2.7,fe:1.9,mg:23,k:290,zn:4.2},
+  {name:'Speck (Frühstücksspeck)',cat:'Fleisch',emoji:'🥓',kcal:541,p:17,c:0,f:54,fi:0,sugar:0,quality:[]},
+  {name:'Chorizo',cat:'Fleisch',emoji:'🌶',kcal:455,p:25,c:2,f:40,fi:0,sugar:0,quality:['highProtein']},
+  {name:'Salami',cat:'Fleisch',emoji:'🍕',kcal:430,p:23,c:2,f:37,fi:0,sugar:1,quality:['highProtein']},
+  {name:'Kochschinken',cat:'Fleisch',emoji:'🍖',kcal:120,p:18,c:2,f:5,fi:0,sugar:1,quality:['highProtein','lowFat'],vitB12:0.5,fe:0.8,mg:20,k:290,zn:1.5},
+  // Fisch (weitere)
+  {name:'Barsch',cat:'Fisch',emoji:'🐟',kcal:91,p:19,c:0,f:2,fi:0,sugar:0,quality:['highProtein','lowFat'],vitD:5,vitB12:1.5,fe:0.6,mg:30,k:380,zn:0.5},
+  {name:'Wolfsbarsch',cat:'Fisch',emoji:'🐟',kcal:97,p:19,c:0,f:2,fi:0,sugar:0,quality:['highProtein','lowFat'],vitD:4,vitB12:1.0,fe:0.3,mg:23,k:310},
+  {name:'Dorsch (Kabeljau)',cat:'Fisch',emoji:'🐟',kcal:82,p:18,c:0,f:1,fi:0,sugar:0,quality:['highProtein','lowFat','lowCalorie'],vitD:2,vitB12:1.0,fe:0.5,mg:28,k:400},
+  {name:'Rotbarsch',cat:'Fisch',emoji:'🐟',kcal:92,p:18,c:0,f:2,fi:0,sugar:0,quality:['highProtein','lowFat'],vitD:3.5,fe:0.3,mg:26,k:420},
+  {name:'Tilapia',cat:'Fisch',emoji:'🐟',kcal:96,p:20,c:0,f:2,fi:0,sugar:0,quality:['highProtein','lowFat'],vitB12:1.6,fe:0.6,mg:27,k:380},
+  {name:'Lachs (geräuchert)',cat:'Fisch',emoji:'🐟',kcal:141,p:19,c:0,f:7,fi:0,sugar:0,quality:['highProtein','omega3'],vitD:7,vitB12:3.2,fe:0.9,mg:18,k:175},
+  {name:'Aal',cat:'Fisch',emoji:'🐟',kcal:236,p:18,c:0,f:18,fi:0,sugar:0,quality:['highProtein','omega3'],vitD:20,vitA:1043,vitE:5.0,fe:0.5,mg:20,k:272},
+  // Getreide & Beilagen
+  {name:'Glasnudeln (gekocht)',cat:'Getreide',emoji:'🍜',kcal:94,p:0,c:23,f:0,fi:0,sugar:0,quality:['lowFat']},
+  {name:'Tortilla-Wrap',cat:'Getreide',emoji:'🫓',kcal:297,p:8,c:52,f:6,fi:2,sugar:2,quality:['lowFat'],fe:2.5,mg:22,k:120,ca:90},
+  {name:'Pumpernickel',cat:'Getreide',emoji:'🍞',kcal:218,p:7,c:43,f:2,fi:7,sugar:1,quality:['complex','highFiber'],fe:2.0,mg:50,k:200,ca:28},
+  {name:'Cracker (Vollkorn)',cat:'Getreide',emoji:'🫓',kcal:403,p:10,c:62,f:14,fi:8,sugar:3,quality:['highFiber']},
+  {name:'Grieß (Hartweizengrieß)',cat:'Getreide',emoji:'🌾',kcal:342,p:12,c:72,f:1,fi:4,sugar:1,quality:['complex'],fe:3.5,mg:47,k:186,ca:17},
+  {name:'Risotto-Reis',cat:'Getreide',emoji:'🍚',kcal:350,p:7,c:77,f:1,fi:1,sugar:0,quality:['lowFat'],mg:13,k:78},
+  // Milchprodukte (weitere)
+  {name:'Crème fraîche',cat:'Milch & Eier',emoji:'🥛',kcal:292,p:2,c:3,f:30,fi:0,sugar:3,quality:[],ca:65,mg:9},
+  {name:'Saure Sahne',cat:'Milch & Eier',emoji:'🥛',kcal:125,p:3,c:4,f:12,fi:0,sugar:4,quality:[],ca:96,mg:10},
+  {name:'Sahne (Schlagsahne)',cat:'Milch & Eier',emoji:'🥛',kcal:299,p:2,c:3,f:31,fi:0,sugar:3,quality:[],vitA:300,ca:65},
+  {name:'Mascarpone',cat:'Milch & Eier',emoji:'🧀',kcal:429,p:5,c:4,f:45,fi:0,sugar:4,quality:[],ca:117,mg:6},
+  {name:'Ricotta',cat:'Milch & Eier',emoji:'🧀',kcal:174,p:11,c:3,f:13,fi:0,sugar:0,quality:['highProtein'],ca:207,mg:11,k:105},
+  {name:'Feta',cat:'Milch & Eier',emoji:'🧀',kcal:264,p:14,c:4,f:21,fi:0,sugar:0,quality:['highProtein'],vitA:125,vitB12:1.7,ca:493,mg:19,k:62,zn:2.9},
+  {name:'Gorgonzola',cat:'Milch & Eier',emoji:'🧀',kcal:353,p:21,c:0,f:29,fi:0,sugar:0,quality:['highProtein'],ca:612,mg:23},
+  {name:'Schafskäse',cat:'Milch & Eier',emoji:'🧀',kcal:264,p:14,c:4,f:21,fi:0,sugar:0,quality:['highProtein'],ca:493,mg:19,zn:2.9},
+  {name:'Joghurt (Vollfett, 3,5%)',cat:'Milch & Eier',emoji:'🥛',kcal:61,p:4,c:5,f:4,fi:0,sugar:5,quality:[],vitB12:0.4,ca:121,mg:12,k:155},
+  {name:'Joghurt (Frucht)',cat:'Milch & Eier',emoji:'🥛',kcal:95,p:3,c:16,f:3,fi:0,sugar:14,quality:['highSugar'],ca:110,mg:10},
+  // Sonstiges & Süßes
+  {name:'Dunkle Schokolade (70%)',cat:'Sonstiges',emoji:'🍫',kcal:572,p:8,c:52,f:37,fi:11,sugar:30,quality:['antioxidant','highFiber'],fe:8,mg:200,k:600,ca:56},
+  {name:'Weißer Zucker',cat:'Sonstiges',emoji:'🍬',kcal:387,p:0,c:100,f:0,fi:0,sugar:100,quality:['highSugar']},
+  {name:'Brauner Zucker',cat:'Sonstiges',emoji:'🍬',kcal:377,p:0,c:98,f:0,fi:0,sugar:98,quality:['highSugar'],mg:9,k:133,ca:85},
+  {name:'Stevia (Pulver)',cat:'Sonstiges',emoji:'🌿',kcal:0,p:0,c:0,f:0,fi:0,sugar:0,quality:['lowCalorie']},
+  {name:'Ahornsirup',cat:'Sonstiges',emoji:'🍯',kcal:260,p:0,c:67,f:0,fi:0,sugar:60,quality:['highSugar'],mg:14,k:204,ca:102},
+  {name:'Agavendicksaft',cat:'Sonstiges',emoji:'🍯',kcal:310,p:0,c:77,f:0,fi:0,sugar:67,quality:['highSugar'],mg:5,k:25},
+  {name:'Kokosblütenzucker',cat:'Sonstiges',emoji:'🥥',kcal:375,p:0,c:92,f:0,fi:0,sugar:90,quality:['highSugar'],fe:11,mg:29,k:1030,ca:60},
+  {name:'Ketchup',cat:'Sonstiges',emoji:'🍅',kcal:101,p:2,c:25,f:0,fi:1,sugar:22,quality:['highSugar'],vitC:4,mg:12,k:281,ca:29},
+  {name:'Mayonnaise',cat:'Sonstiges',emoji:'🫙',kcal:680,p:1,c:3,f:74,fi:0,sugar:2,quality:[]},
+  {name:'Senf',cat:'Sonstiges',emoji:'🌿',kcal:66,p:5,c:8,f:4,fi:3,sugar:2,quality:[]},
+  {name:'Sojasauce',cat:'Sonstiges',emoji:'🫙',kcal:60,p:6,c:9,f:0,fi:0,sugar:5,quality:[],mg:40,k:435,ca:18},
+  {name:'Balsamico-Essig',cat:'Sonstiges',emoji:'🫙',kcal:88,p:0,c:17,f:0,fi:0,sugar:15,quality:[]},
+  {name:'Tomatenmark',cat:'Sonstiges',emoji:'🍅',kcal:82,p:4,c:17,f:0,fi:4,sugar:11,quality:['lowFat'],vitC:22,vitA:142,fe:2.9,mg:36,k:1014,ca:36},
+  {name:'Passata (Tomaten)',cat:'Sonstiges',emoji:'🍅',kcal:35,p:2,c:7,f:0,fi:2,sugar:5,quality:['lowCalorie'],vitC:15,vitA:75,mg:14,k:390,ca:22},
+  {name:'Pesto (Basilikum)',cat:'Sonstiges',emoji:'🌿',kcal:400,p:9,c:7,f:40,fi:3,sugar:2,quality:[],ca:260},
+  {name:'Müsli (Früchte)',cat:'Getreide',emoji:'🥣',kcal:365,p:9,c:66,f:6,fi:7,sugar:28,quality:['highSugar','highFiber'],fe:3.5,mg:80,k:350,ca:50},
+  {name:'Protein-Riegel',cat:'Sonstiges',emoji:'💪',kcal:380,p:30,c:35,f:12,fi:4,sugar:8,quality:['highProtein']},
+  {name:'Nuss-Nougat-Creme',cat:'Sonstiges',emoji:'🍫',kcal:546,p:6,c:57,f:32,fi:3,sugar:55,quality:['highSugar'],ca:226,mg:40},
+  {name:'Marmelade',cat:'Sonstiges',emoji:'🍓',kcal:250,p:0,c:65,f:0,fi:1,sugar:60,quality:['highSugar'],vitC:10},
+  {name:'Chips (Kartoffel)',cat:'Sonstiges',emoji:'🥔',kcal:536,p:6,c:50,f:34,fi:4,sugar:1,quality:[]},
+  {name:'Popcorn (gesalzen)',cat:'Sonstiges',emoji:'🍿',kcal:375,p:11,c:66,f:4,fi:13,sugar:1,quality:['highFiber'],mg:110,k:300},
+  {name:'Reis-Waffel',cat:'Getreide',emoji:'🌾',kcal:386,p:8,c:82,f:3,fi:1,sugar:3,quality:[]},
+  // Getränke
+  {name:'Wasser (still)',cat:'Getränke',emoji:'💧',kcal:0,p:0,c:0,f:0,fi:0,sugar:0,quality:['lowCalorie']},
+  {name:'Schwarzer Kaffee',cat:'Getränke',emoji:'☕',kcal:2,p:0,c:0,f:0,fi:0,sugar:0,quality:['lowCalorie']},
+  {name:'Grüner Tee',cat:'Getränke',emoji:'🍵',kcal:1,p:0,c:0,f:0,fi:0,sugar:0,quality:['lowCalorie','antioxidant']},
+  {name:'Milch (1,5%)',cat:'Getränke',emoji:'🥛',kcal:46,p:3,c:5,f:2,fi:0,sugar:5,quality:[],vitD:0.1,vitB12:0.4,ca:120,mg:11,k:140},
+  {name:'Apfelsaft (naturtrüb)',cat:'Getränke',emoji:'🍎',kcal:45,p:0,c:11,f:0,fi:0,sugar:10,quality:['highSugar'],vitC:15,k:119},
+  {name:'Bier (0,5L)',cat:'Getränke',emoji:'🍺',kcal:43,p:0,c:3,f:0,fi:0,sugar:0,quality:[]},
+  {name:'Rotwein (Glas 200ml)',cat:'Getränke',emoji:'🍷',kcal:85,p:0,c:3,f:0,fi:0,sugar:1,quality:[]},
+  // Pilze
+  {name:'Steinpilze (getrocknet)',cat:'Gemüse',emoji:'🍄',kcal:286,p:35,c:22,f:4,fi:26,sugar:2,quality:['highProtein','highFiber'],fe:17,mg:96,k:1990,zn:11,ca:30},
+  {name:'Austernpilze',cat:'Gemüse',emoji:'🍄',kcal:33,p:3,c:6,f:0,fi:3,sugar:1,quality:['lowCalorie'],vitD:0.7,vitB12:0,fe:1.3,mg:18,k:420,zn:0.7},
+  {name:'Shiitake',cat:'Gemüse',emoji:'🍄',kcal:34,p:2,c:7,f:0,fi:3,sugar:2,quality:['lowCalorie'],vitD:0.4,vitB12:0,fe:0.4,mg:20,k:304,zn:1.0},
+  // Hülsenfrüchte (weitere)
+  {name:'Gelbe Erbsen (gekocht)',cat:'Hülsenfrüchte',emoji:'🫘',kcal:118,p:8,c:21,f:0,fi:5,sugar:3,quality:['highProtein','highFiber'],fe:1.3,mg:36,k:365,ca:27},
+  {name:'Weiße Bohnen (Dose)',cat:'Hülsenfrüchte',emoji:'🫘',kcal:127,p:8,c:23,f:0,fi:6,sugar:0,quality:['highProtein','highFiber'],fe:2.5,mg:40,k:280,ca:60},
+  {name:'Fave (Ackerbohnen)',cat:'Hülsenfrüchte',emoji:'🫘',kcal:88,p:8,c:16,f:0,fi:6,sugar:2,quality:['highProtein','highFiber'],vitC:2,fe:1.5,mg:38,k:332,ca:36},
+  // Nüsse (weitere)
+  {name:'Kokosflocken',cat:'Nüsse',emoji:'🥥',kcal:594,p:7,c:26,f:56,fi:16,sugar:7,quality:['healthyFat','highFiber'],fe:3.3,mg:90,k:543,ca:26},
+  {name:'Weizenkeime',cat:'Nüsse',emoji:'🌾',kcal:360,p:29,c:52,f:10,fi:15,sugar:7,quality:['highProtein','highFiber'],vitE:19,fe:9.2,mg:239,k:947,zn:12,ca:44},
+  {name:'Kokosnussöl',cat:'Fette',emoji:'🫙',kcal:862,p:0,c:0,f:100,fi:0,sugar:0,quality:['healthyFat']},
+  {name:'Sesamöl',cat:'Fette',emoji:'🫙',kcal:884,p:0,c:0,f:100,fi:0,sugar:0,quality:['healthyFat'],vitE:1.4},
+  {name:'Rapsöl',cat:'Fette',emoji:'🫙',kcal:884,p:0,c:0,f:100,fi:0,sugar:0,quality:['healthyFat','omega3'],vitE:17},
+  {name:'Sonnenblumenöl',cat:'Fette',emoji:'🫙',kcal:884,p:0,c:0,f:100,fi:0,sugar:0,quality:['healthyFat'],vitE:63},
+  {name:'Ghee (Butterschmalz)',cat:'Fette',emoji:'🧈',kcal:900,p:0,c:0,f:99,fi:0,sugar:0,quality:[],vitA:840,vitD:1.5},
+  // Gewürze & Kräuter (Nährwerte für 1 TL ~5g)
+  {name:'Zimt (gemahlen)',cat:'Sonstiges',emoji:'🍂',kcal:247,p:4,c:81,f:1,fi:53,sugar:2,quality:['antioxidant','highFiber'],fe:8.3,mg:60,k:431,ca:1002},
+  {name:'Kurkuma (gemahlen)',cat:'Sonstiges',emoji:'🟡',kcal:354,p:8,c:65,f:10,fi:21,sugar:3,quality:['antioxidant'],vitC:26,fe:41,mg:193,k:2080,ca:183},
+  {name:'Cayennepfeffer',cat:'Sonstiges',emoji:'🌶',kcal:318,p:12,c:57,f:17,fi:27,sugar:10,quality:[],vitC:76,vitA:2081,fe:7.8,mg:152,k:2014},
+  {name:'Petersilie (frisch)',cat:'Gemüse',emoji:'🌿',kcal:36,p:3,c:6,f:1,fi:3,sugar:1,quality:['lowCalorie','vitamin'],vitC:133,vitA:421,vitK:1640,fe:6.2,mg:50,k:554,ca:138},
+  {name:'Basilikum (frisch)',cat:'Gemüse',emoji:'🌿',kcal:23,p:3,c:3,f:1,fi:2,sugar:0,quality:['lowCalorie','vitamin'],vitC:18,vitA:264,vitK:415,fe:3.2,mg:64,k:295,ca:177},
+  {name:'Minze (frisch)',cat:'Gemüse',emoji:'🌿',kcal:44,p:3,c:8,f:1,fi:7,sugar:0,quality:['lowCalorie','highFiber'],vitC:32,vitA:212,vitK:628,fe:11,mg:80,k:569,ca:243},
+  {name:'Schnittlauch',cat:'Gemüse',emoji:'🌿',kcal:30,p:3,c:4,f:1,fi:3,sugar:2,quality:['lowCalorie','vitamin'],vitC:58,vitA:218,vitK:213,fe:1.6,mg:42,k:296,ca:92},
+  {name:'Dill (frisch)',cat:'Gemüse',emoji:'🌿',kcal:43,p:4,c:7,f:1,fi:2,sugar:0,quality:['lowCalorie','vitamin'],vitC:85,vitA:386,vitK:55,fe:6.6,mg:55,k:738,ca:208},
+  {name:'Koriander (frisch)',cat:'Gemüse',emoji:'🌿',kcal:23,p:2,c:4,f:1,fi:3,sugar:0,quality:['lowCalorie','vitamin'],vitC:27,vitA:337,vitK:310,fe:1.8,mg:26,k:521,ca:67},
+  // Internationale Lebensmittel
+  {name:'Miso-Paste',cat:'Sonstiges',emoji:'🫙',kcal:199,p:12,c:26,f:6,fi:5,sugar:6,quality:[],mg:48,k:210,ca:57,zn:2.5},
+  {name:'Edamame (gegart)',cat:'Hülsenfrüchte',emoji:'🫘',kcal:122,p:11,c:10,f:5,fi:5,sugar:2,quality:['highProtein','highFiber'],vitC:6,fe:2.3,mg:64,k:436,ca:63},
+  {name:'Kimchi',cat:'Sonstiges',emoji:'🥬',kcal:15,p:1,c:3,f:0,fi:2,sugar:1,quality:['lowCalorie'],vitC:18,vitA:59,fe:0.3,mg:16,k:151,ca:33},
+  {name:'Sauerkraut',cat:'Gemüse',emoji:'🥬',kcal:19,p:1,c:4,f:0,fi:3,sugar:2,quality:['lowCalorie','highFiber'],vitC:15,vitK:13,fe:1.5,mg:13,k:170,ca:30},
+  {name:'Tofu (geräuchert)',cat:'Hülsenfrüchte',emoji:'⬛',kcal:140,p:14,c:3,f:8,fi:0,sugar:0,quality:['highProtein'],fe:2.0,mg:50,k:180,ca:250},
+  {name:'Seitan (Weizengluten)',cat:'Hülsenfrüchte',emoji:'🫘',kcal:143,p:25,c:9,f:2,fi:0,sugar:0,quality:['highProtein','lowFat'],fe:4,mg:27,k:55,ca:22},
+  {name:'Natto',cat:'Hülsenfrüchte',emoji:'🫘',kcal:212,p:18,c:14,f:11,fi:5,sugar:4,quality:['highProtein','highFiber','omega3'],vitK:1103,fe:8.6,mg:115,k:729,ca:217},
+  {name:'Tahini (Sesampaste)',cat:'Nüsse',emoji:'🌿',kcal:595,p:17,c:21,f:53,fi:9,sugar:0,quality:['healthyFat'],fe:8.9,mg:95,k:414,zn:4.6,ca:426},
+  // Tiefkühl & Convenience
+  {name:'Erbsen (gefroren)',cat:'Gemüse',emoji:'🟢',kcal:77,p:5,c:14,f:0,fi:5,sugar:6,quality:['highFiber'],vitC:40,vitA:38,fe:1.5,mg:33,k:244,ca:25},
+  {name:'Spinat (gefroren)',cat:'Gemüse',emoji:'🥬',kcal:23,p:3,c:3,f:0,fi:2,sugar:0,quality:['lowCalorie','vitamin'],vitC:15,vitA:390,vitK:380,fe:2.1,mg:55,k:466,ca:90},
+  {name:'Brokkoli (gefroren)',cat:'Gemüse',emoji:'🥦',kcal:34,p:3,c:6,f:0,fi:3,sugar:2,quality:['lowCalorie','highFiber','vitamin'],vitC:60,fe:0.7,mg:21,k:316,ca:47},
+  {name:'Gemüsemix (gefroren)',cat:'Gemüse',emoji:'🥦',kcal:40,p:3,c:7,f:0,fi:3,sugar:4,quality:['lowCalorie','highFiber'],vitC:15,fe:1.0,mg:18,k:220,ca:35},
+  // Pilze
+  {name:'Pfifferlinge',cat:'Gemüse',emoji:'🍄',kcal:38,p:2,c:7,f:1,fi:4,sugar:0,quality:['lowCalorie','highFiber'],vitD:5.3,fe:3.5,mg:12,k:506,ca:15},
+  {name:'Portobello',cat:'Gemüse',emoji:'🍄',kcal:22,p:3,c:4,f:0,fi:1,sugar:3,quality:['lowCalorie'],vitD:0.2,fe:0.3,mg:9,k:364,zn:0.4},
+  // Fleisch
+  {name:'Pute (Brust)',cat:'Fleisch',emoji:'🍗',kcal:107,p:24,c:0,f:1,fi:0,sugar:0,quality:['highProtein','lowFat'],vitB12:0.3,fe:1.0,mg:28,k:340,zn:2.0},
+  {name:'Lammfleisch',cat:'Fleisch',emoji:'🥩',kcal:258,p:18,c:0,f:21,fi:0,sugar:0,quality:['highProtein'],vitB12:2.7,fe:1.8,mg:20,k:290,zn:4.5},
+  {name:'Kalbfleisch',cat:'Fleisch',emoji:'🥩',kcal:105,p:20,c:0,f:3,fi:0,sugar:0,quality:['highProtein','lowFat'],vitB12:1.4,fe:1.0,mg:24,k:370,zn:3.8},
+  // Fisch
+  {name:'Muscheln',cat:'Fisch',emoji:'🦪',kcal:86,p:12,c:4,f:2,fi:0,sugar:0,quality:['highProtein'],vitB12:11,fe:3.9,mg:34,k:268,zn:1.5,ca:26},
+  // Obst
+  {name:'Aprikose',cat:'Obst',emoji:'🍑',kcal:48,p:1,c:11,f:0,fi:2,sugar:9,quality:['lowCalorie','vitamin'],vitC:10,vitA:96,mg:10,k:259,ca:13},
+  {name:'Sauerkirschen',cat:'Obst',emoji:'🍒',kcal:56,p:1,c:14,f:0,fi:2,sugar:9,quality:['antioxidant'],vitC:10,vitA:36,mg:9,k:173,ca:16},
+  {name:'Stachelbeere',cat:'Obst',emoji:'🟢',kcal:44,p:1,c:10,f:1,fi:4,sugar:6,quality:['highFiber','vitamin'],vitC:28,fe:0.5,mg:10,k:198,ca:14},
+  {name:'Brombeere',cat:'Obst',emoji:'🫐',kcal:52,p:1,c:10,f:1,fi:5,sugar:5,quality:['highFiber','antioxidant'],vitC:21,vitA:11,vitK:19,fe:0.6,mg:20,k:196,ca:29},
+  {name:'Johannisbeere (rot)',cat:'Obst',emoji:'🔴',kcal:56,p:1,c:14,f:0,fi:4,sugar:8,quality:['vitamin','highFiber'],vitC:41,mg:13,k:275,ca:33},
 ];
 const QL={
   highProtein:{label:'Viel Protein',cls:'good'},
@@ -614,6 +891,143 @@ const QL={
 
 // ── Synonyms ──────────────────────────────────────────────────────────────────
 const SYNONYMS={
+  // neue Synonyme
+  'zitrone':'Zitrone','zitronen':'Zitrone','lemon':'Zitrone',
+  'limette':'Limette','lime':'Limette',
+  'grapefruit':'Grapefruit','pampelmuse':'Grapefruit',
+  'clementine':'Clementine','mandarine':'Clementine',
+  'zuckerschote':'Zuckerschoten','zuckerschotten':'Zuckerschoten','zuckerbse':'Zuckerschoten','snap pea':'Zuckerschoten',
+  'zuckermais':'Zuckermais','sweetcorn':'Zuckermais',
+  'eisbergsalat':'Eisbergsalat','kopfsalat':'Eisbergsalat',
+  'feldsalat':'Feldsalat','rapunzel':'Feldsalat','nüsslisalat':'Feldsalat',
+  'radieschen':'Radieschen','radies':'Radieschen',
+  'knoblauch':'Knoblauch','garlic':'Knoblauch',
+  'zwiebel':'Zwiebel','onion':'Zwiebel',
+  'frühlingszwiebel':'Frühlingszwiebeln','lauchzwiebel':'Frühlingszwiebeln','scallion':'Frühlingszwiebeln',
+  'mangold':'Mangold','chard':'Mangold','krautstiel':'Mangold',
+  'pastinake':'Pastinake','parsnip':'Pastinake',
+  'sauerkraut':'Sauerkraut',
+  'petersilie':'Petersilie (frisch)','parsley':'Petersilie (frisch)',
+  'basilikum':'Basilikum (frisch)','basil':'Basilikum (frisch)',
+  'schnittlauch':'Schnittlauch','chives':'Schnittlauch',
+  'dill':'Dill (frisch)',
+  'koriander':'Koriander (frisch)','cilantro':'Koriander (frisch)',
+  'putenbrust':'Putenbrust','pute':'Putenbrust','truthahn':'Putenbrust','turkey':'Putenbrust',
+  'kochschinken':'Kochschinken','schinken':'Kochschinken','ham':'Kochschinken',
+  'salami':'Salami',
+  'speck':'Speck (Frühstücksspeck)','bacon':'Speck (Frühstücksspeck)',
+  'feta':'Feta','fetakäse':'Feta',
+  'ricotta':'Ricotta',
+  'mascarpone':'Mascarpone',
+  'crème fraîche':'Crème fraîche','creme fraiche':'Crème fraîche',
+  'sahne':'Sahne (Schlagsahne)','schlagsahne':'Sahne (Schlagsahne)','whipping cream':'Sahne (Schlagsahne)',
+  'saure sahne':'Saure Sahne','schmand':'Saure Sahne',
+  'zucker':'Weißer Zucker','haushaltszucker':'Weißer Zucker','raffinade':'Weißer Zucker',
+  'brauner zucker':'Brauner Zucker','rohrzucker':'Brauner Zucker',
+  'ahornsirup':'Ahornsirup','maple syrup':'Ahornsirup',
+  'agave':'Agavendicksaft','agavensirup':'Agavendicksaft',
+  'ketchup':'Ketchup',
+  'mayonnaise':'Mayonnaise','mayo':'Mayonnaise',
+  'senf':'Senf','mustard':'Senf',
+  'sojasauce':'Sojasauce','sojasoße':'Sojasauce','tamari':'Sojasauce',
+  'tomatenmark':'Tomatenmark',
+  'pesto':'Pesto (Basilikum)',
+  'marmelade':'Marmelade','konfitüre':'Marmelade','jam':'Marmelade',
+  'nuss nougat':'Nuss-Nougat-Creme','nutella':'Nuss-Nougat-Creme','nougat':'Nuss-Nougat-Creme',
+  'chips':'Chips (Kartoffel)','kartoffelchips':'Chips (Kartoffel)',
+  'popcorn':'Popcorn (gesalzen)',
+  'kaffee':'Schwarzer Kaffee','coffee':'Schwarzer Kaffee',
+  'tee':'Grüner Tee','grüntee':'Grüner Tee','green tea':'Grüner Tee',
+  'milch':'Milch (1,5%)','kuhmilch':'Milch (1,5%)',
+  'bier':'Bier (0,5L)',
+  'wein':'Rotwein (Glas 200ml)','rotwein':'Rotwein (Glas 200ml)',
+  'rapsöl':'Rapsöl','raps':'Rapsöl',
+  'sonnenblumenöl':'Sonnenblumenöl',
+  'sesamöl':'Sesamöl',
+  'ghee':'Ghee (Butterschmalz)','butterschmalz':'Ghee (Butterschmalz)',
+  'zimt':'Zimt (gemahlen)','cinnamon':'Zimt (gemahlen)',
+  'miso':'Miso-Paste',
+  'kimchi':'Kimchi',
+  'natto':'Natto',
+  'sauerkraut':'Sauerkraut',
+  'glasnudeln':'Glasnudeln (gekocht)','cellophannudeln':'Glasnudeln (gekocht)',
+  'wrap':'Tortilla-Wrap','tortilla':'Tortilla-Wrap',
+
+  'zitrone':'Zitrone','zitronen':'Zitrone','lemon':'Zitrone',
+  'limette':'Limette','lime':'Limette','limetten':'Limette',
+  'grapefruit':'Grapefruit','pomelo':'Grapefruit',
+  'clementine':'Clementine','mandarine':'Clementine',
+  'zuckerschoten':'Zuckerschoten','zuckererbsen':'Zuckerschoten','snap peas':'Zuckerschoten',
+  'stangensellerie':'Stangensellerie','bleichsellerie':'Stangensellerie',
+  'knoblauch':'Knoblauch','garlic':'Knoblauch',
+  'zwiebel':'Zwiebel','onion':'Zwiebel','zwiebeln':'Zwiebel',
+  'frühlingszwiebeln':'Frühlingszwiebeln','lauchzwiebeln':'Frühlingszwiebeln','scallions':'Frühlingszwiebeln',
+  'chili':'Chili (frisch)','peperoni':'Chili (frisch)',
+  'petersilie':'Petersilie','parsley':'Petersilie',
+  'basilikum':'Basilikum','basil':'Basilikum',
+  'schnittlauch':'Schnittlauch','chives':'Schnittlauch',
+  'koriander':'Koriander','cilantro':'Koriander',
+  'dill':'Dill',
+  'minze':'Minze','mint':'Minze',
+  'rosmarin':'Rosmarin','rosemary':'Rosmarin',
+  'thymian':'Thymian','thyme':'Thymian',
+  'radieschen':'Radieschen','radish':'Radieschen',
+  'rettich':'Rettich',
+  'feldsalat':'Feldsalat','rapunzel':'Feldsalat','vogerlsalat':'Feldsalat',
+  'rucola':'Rucola','rauke':'Rucola','raukensalat':'Rucola',
+  'mangold':'Mangold','chard':'Mangold',
+  'meerrettich':'Meerrettich','kren':'Meerrettich','horseradish':'Meerrettich',
+  'pastinake':'Pastinake','parsnip':'Pastinake',
+  'schwarzwurzel':'Schwarzwurzel',
+  'topinambur':'Topinambur','jerusalemartischoke':'Topinambur',
+  'artischocke':'Artischocke',
+  'endiviensalat':'Endiviensalat','endivie':'Endiviensalat',
+  'radicchio':'Radicchio',
+  'rote paprika':'Rote Paprika','rote peperoni':'Rote Paprika',
+  'gelbe paprika':'Gelbe Paprika',
+  'gruene paprika':'Grüne Paprika','grüne paprika':'Grüne Paprika',
+  'butternut':'Kürbis (Butternut)','butternusskürbis':'Kürbis (Butternut)',
+  'putenbrustm':'Putenbrust','pute':'Putenbrust','turkey':'Putenbrust',
+  'lamm':'Lammkeule','lammfleisch':'Lammkeule',
+  'kalb':'Kalbsschnitzel','kalbfleisch':'Kalbsschnitzel',
+  'schinken':'Schinken (gekocht)','ham':'Schinken (gekocht)',
+  'wurst':'Bratwurst','bratwurst':'Bratwurst',
+  'salami':'Salami',
+  'seelachs':'Seelachs','pollack':'Seelachs',
+  'matjes':'Matjes','hering':'Hering (geräuchert)',
+  'räucherlachs':'Räucherlachs','smoked salmon':'Räucherlachs',
+  'muscheln':'Miesmuscheln','miesmuscheln':'Miesmuscheln',
+  'austern':'Austern','oysters':'Austern',
+  'tintenfisch':'Tintenfisch','kalmar':'Tintenfisch','squid':'Tintenfisch',
+  'ricotta':'Ricotta',
+  'mascarpone':'Mascarpone',
+  'ziegenkäse':'Ziegenkäse','ziegenfrischkäse':'Ziegenkäse',
+  'sahne':'Sahne','schlagsahne':'Sahne','whipping cream':'Sahne',
+  'saure sahne':'Saure Sahne','schmand':'Saure Sahne',
+  'creme fraiche':'Crème fraîche','crème fraîche':'Crème fraîche',
+  'quark':'Quark (Vollfett)',
+  'rote linsen':'Rote Linsen (trocken)','rotelinsen':'Rote Linsen (trocken)',
+  'kaffee':'Kaffee (schwarz)','coffee':'Kaffee (schwarz)',
+  'grüner tee':'Grüner Tee','gruener tee':'Grüner Tee','green tea':'Grüner Tee',
+  'schwarzer tee':'Schwarzer Tee','black tea':'Schwarzer Tee',
+  'kamille':'Kamillentee','kamillentee':'Kamillentee',
+  'mineralwasser':'Mineralwasser','wasser':'Mineralwasser',
+  'ketchup':'Ketchup','tomatenketchup':'Ketchup',
+  'senf':'Senf','mustard':'Senf',
+  'mayo':'Mayonnaise','mayonnaise':'Mayonnaise',
+  'sojasosse':'Sojasoße','sojasoße':'Sojasoße','sojasauce':'Sojasoße','soy sauce':'Sojasoße',
+  'eis':'Vanilleeis','vanilleeis':'Vanilleeis',
+  'pistazien':'Pistazien','pistachio':'Pistazien',
+  'pecannüsse':'Pecannüsse','pecan':'Pecannüsse',
+  'kokosflocken':'Kokosflocken','desiccated coconut':'Kokosflocken',
+  'tortilla':'Tortilla (Weizen)',
+  'pita':'Pita-Brot','pitabrot':'Pita-Brot',
+  'croissant':'Croissant',
+  'bagel':'Bagel',
+  'guave':'Guave','guaven':'Guave',
+  'drachenfrucht':'Drachenfrucht','pitaya':'Drachenfrucht',
+  'lychee':'Lychee','litschi':'Lychee',
+  'kumquat':'Kumquat',
   'flohsamen':'Flohsamenschalen','flohsamenschale':'Flohsamenschalen','psyllium':'Flohsamenschalen',
   'spirulina':'Spirulina (Pulver)',
   'chlorella':'Chlorella (Pulver)',
@@ -726,6 +1140,57 @@ const SYNONYMS={
   'soja':'Sojadrink','sojadrink':'Sojadrink',
   'hafermilch':'Hafermilch','oatmilk':'Hafermilch',
   'mandelmilch':'Mandelmilch',
+  // Neue Synonyme
+  'pfifferling':'Pfifferlinge','pfifferlinge':'Pfifferlinge','chanterelle':'Pfifferlinge',
+  'portobello':'Portobello','portobellipilz':'Portobello',
+  'pute':'Pute (Brust)','truthahn':'Pute (Brust)','turkey':'Pute (Brust)','putenfilet':'Pute (Brust)',
+  'lamm':'Lammfleisch','lammkeule':'Lammfleisch','lammkotelett':'Lammfleisch',
+  'kalb':'Kalbfleisch','kalbsschnitzel':'Kalbfleisch','kalbsfilet':'Kalbfleisch',
+  'muschel':'Muscheln','miesmuscheln':'Muscheln','mussels':'Muscheln',
+  'auster':'Austern','oyster':'Austern',
+  'aprikose':'Aprikose','aprikosen':'Aprikose','marille':'Aprikose','marillen':'Aprikose',
+  'kirsche':'Sauerkirschen','kirschen':'Sauerkirschen','sauer kirsche':'Sauerkirschen',
+  'stachelbeere':'Stachelbeere','stachelbeeren':'Stachelbeere','gooseberry':'Stachelbeere',
+  'brombeere':'Brombeere','brombeeren':'Brombeere','blackberry':'Brombeere',
+  'johannisbeere':'Johannisbeere (rot)','rote johannisbeere':'Johannisbeere (rot)','currant':'Johannisbeere (rot)',
+  'feta':'Feta','fetakäse':'Feta',
+  'ricotta':'Ricotta',
+  'mascarpone':'Mascarpone',
+  'crème fraîche':'Crème fraîche','creme fraiche':'Crème fraîche',
+  'schmand':'Schmand',
+  'sahne':'Sahne (Schlagsahne)','schlagsahne':'Sahne (Schlagsahne)','cream':'Sahne (Schlagsahne)',
+  'saure sahne':'Saure Sahne','saurer rahm':'Saure Sahne',
+  'salami':'Salami',
+  'knoblauchzehe':'Knoblauch','garlic':'Knoblauch',
+  'frühlingszwiebel':'Frühlingszwiebeln','schnittlauch zwie':'Frühlingszwiebeln','spring onion':'Frühlingszwiebeln',
+  'chili':'Chili (frisch)','chilischote':'Chili (frisch)','peperoni':'Chili (frisch)',
+  'petersilie':'Petersilie (frisch)','parsley':'Petersilie (frisch)',
+  'basilikum':'Basilikum (frisch)','basil':'Basilikum (frisch)',
+  'koriander':'Koriander (frisch)','cilantro':'Koriander (frisch)',
+  'minze':'Minze (frisch)','mint':'Minze (frisch)',
+  'dill':'Dill (frisch)',
+  'feldsalat':'Feldsalat','rapunzel':'Feldsalat','mâche':'Feldsalat',
+  'chicorée':'Chicorée','chicory':'Chicorée',
+  'mangold':'Mangold','chard':'Mangold',
+  'endivie':'Endivie','endivien':'Endivie',
+  'radicchio':'Radicchio',
+  'okra':'Okra','okraschoten':'Okra',
+  'radieschen':'Radieschen','radish':'Radieschen',
+  'rettich':'Rettich',
+  'pastinake':'Pastinaken','pastinaken':'Pastinaken','parsnip':'Pastinaken',
+  'topinambur':'Topinambur','jerusalem artischocke':'Topinambur',
+  'schalotte':'Schalotte','shallot':'Schalotte',
+  'espresso':'Espresso','kaffee':'Filterkaffee','coffee':'Filterkaffee',
+  'schwarztee':'Schwarztee','black tea':'Schwarztee',
+  'senf':'Senf','mustard':'Senf',
+  'ketchup':'Ketchup',
+  'mayo':'Mayonnaise','mayonnaise':'Mayonnaise',
+  'chips':'Chips (Kartoffel)','crisps':'Chips (Kartoffel)',
+  'croissant':'Croissant',
+  'brezel':'Brezel','pretzel':'Brezel',
+  'pita':'Pita-Brot','pitabrot':'Pita-Brot',
+  'ricotta':'Ricotta',
+  'zuckererbse':'Zuckerschoten','kaiserschoten':'Zuckerschoten',
 };
 
 function resolveSynonym(q){
@@ -1086,41 +1551,67 @@ function searchOnline(q){
   const res=document.getElementById('search-results');
   res.innerHTML='<div class="loading"><div class="loading-spinner"></div>Online suchen nach "'+q+'"...</div>';
 
-  // Simple clean API call without unsupported parameters
+  // OFF v2 API – supports CORS properly, works from any browser/domain
   const url='https://world.openfoodfacts.org/cgi/search.pl'
     +'?search_terms='+encodeURIComponent(q)
-    +'&search_simple=1'
     +'&action=process'
     +'&json=1'
-    +'&page_size=12';
+    +'&page_size=15'
+    +'&no_cache=1';
 
-  fetch(url)
+  fetch(url, {method:'GET', headers:{'Accept':'application/json'}})
     .then(function(r){
       if(!r.ok) throw new Error('HTTP '+r.status);
       return r.json();
     })
     .then(function(data){
-      const products=data.products||[];
-      const items=products.filter(function(p){
+      var products=data.products||data.hits||[];
+      var items=products.filter(function(p){
         return (p.product_name_de||p.product_name)&&p.code;
       }).slice(0,10);
 
       if(!items.length){
-        res.innerHTML='<div class="empty-state"><div class="empty-state-emoji">&#128269;</div>'
-          +'<div class="empty-state-title">Nichts gefunden</div>'
-          +'<div class="empty-state-sub">Kein Produkt gefunden fuer "'+q+'"</div></div>';
-        return;
+        // Try brand search fallback
+        return fetch('https://world.openfoodfacts.org/cgi/search.pl?tagtype_0=brands&tag_contains_0=contains&tag_0='
+          +encodeURIComponent(q)+'&action=process&json=1&page_size=10&no_cache=1',
+          {method:'GET', headers:{'Accept':'application/json'}})
+          .then(function(r2){return r2.json();})
+          .then(function(data2){
+            var items2=(data2.products||[]).filter(function(p){
+              return (p.product_name_de||p.product_name)&&p.code;
+            }).slice(0,10);
+            renderOnlineResults(items2, q, res);
+          });
       }
-      renderOnlineResults(items, res);
+      renderOnlineResults(items, q, res);
     })
     .catch(function(err){
-      res.innerHTML='<div class="empty-state"><div class="empty-state-emoji">&#9888;</div>'
-        +'<div class="empty-state-title">Verbindungsfehler</div>'
-        +'<div class="empty-state-sub">Open Food Facts nicht erreichbar. Bitte Internetverbindung und HTTPS pruefen.</div></div>';
+      // Fallback: try the v2 search API
+      fetch('https://world.openfoodfacts.org/api/v2/search?search_terms='
+        +encodeURIComponent(q)+'&page_size=10&json=1',
+        {method:'GET', headers:{'Accept':'application/json'}})
+        .then(function(r){return r.json();})
+        .then(function(data){
+          var items=(data.products||[]).filter(function(p){
+            return (p.product_name_de||p.product_name)&&p.code;
+          }).slice(0,10);
+          renderOnlineResults(items, q, res);
+        })
+        .catch(function(){
+          res.innerHTML='<div class="empty-state"><div class="empty-state-emoji">&#9888;</div>'
+            +'<div class="empty-state-title">Verbindungsfehler</div>'
+            +'<div class="empty-state-sub">Open Food Facts nicht erreichbar. Bitte HTTPS und Internetverbindung pruefen.</div></div>';
+        });
     });
 }
 
-function renderOnlineResults(items, res){
+function renderOnlineResults(items, q, res){
+  if(!items||!items.length){
+    res.innerHTML='<div class="empty-state"><div class="empty-state-emoji">&#128269;</div>'
+      +'<div class="empty-state-title">Nichts gefunden</div>'
+      +'<div class="empty-state-sub">Kein Produkt fuer "'+q+'" gefunden</div></div>';
+    return;
+  }
   var html='<div style="font-size:11px;color:var(--text3);margin-bottom:8px;padding:0 2px">'
     +'&#127760; '+items.length+' Online-Ergebnis'+(items.length!==1?'se':'')+' (Open Food Facts)'
     +'</div><div class="food-list">';
@@ -1136,12 +1627,11 @@ function renderOnlineResults(items, res){
       +'<div class="food-item-emoji">&#128230;</div>'
       +'<div class="food-item-info">'
         +'<div class="food-item-name">'+name+'</div>'
-        +'<div class="food-item-sub">'+(brand?brand+' &middot; ':'')+(kcal?kcal+' kcal/100g':'')+'</div>'
+        +'<div class="food-item-sub">'+(brand?brand+' &middot; ':'')+(kcal?kcal+' kcal/100g':'Nährwerte laden...')+'</div>'
       +'</div>'
       +(kcal?'<div class="food-item-right"><div class="food-item-kcal">'+kcal+'</div><div class="food-item-per">kcal/100g</div></div>':'')
     +'</div>';
   });
-
   html+='</div>';
   res.innerHTML=html;
 }
